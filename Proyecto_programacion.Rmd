@@ -1,0 +1,34 @@
+---
+title: "Proyecto"
+subtitle: "Poner el tema cuando ya este definido"
+author: "Francini Cervantes, Yelena Hernandez, David Sabater"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+---
+
+```{r setup, message=FALSE, warning=FALSE}}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Librerias
+library(shiny)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(magrittr)
+library(ggplot2)
+
+```
+
+# Recoleccion y procesamientos de datos
+
+## Limpieza, transformación y unión de los datos 
+```{r}
+
+```
+

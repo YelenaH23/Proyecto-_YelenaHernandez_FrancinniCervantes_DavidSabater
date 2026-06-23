@@ -16,19 +16,36 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 #Librerias
+
 library(shiny)
 library(dplyr)
 library(tidyr)
 library(lubridate)
 library(magrittr)
 library(ggplot2)
+ library(tidyverse)
+library(readxl)
+library(openxlsx)
+
+
 
 ```
 
-# Recoleccion y procesamientos de datos
 
-## Limpieza, transformación y unión de los datos 
-```{r}
+
+
+# Carga de las base de datos 
+
+```{r }
+# Base_ICC <- read_xlsx("Bases/Base del ICC 2022-2023_vf.xls")
+Base_ICC_2022_2023 <- read.xlsx("Base del ICC 2022-2023_vf.xlsx")
+Base_ICC_2023_2024 <- read.xlsx("Base ICC 2023_2024.xlsx", sheet = "Datos")
+Base_Universidad <- read.xlsx("bd_matricula_sector_estatal_2021_2025.xlsx")
+
+
+```
+
+```{r
 
 ```
 

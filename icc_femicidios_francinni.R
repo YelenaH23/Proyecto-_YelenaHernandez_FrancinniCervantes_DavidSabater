@@ -342,11 +342,11 @@ nrow(catalogo_cantones)
      homicidios_mujeres_pendientes = sum(homicidios_mujeres_pendientes),
      homicidios_indeterminado = sum(homicidios_indeterminado),
      
-# Variable principal de femicidios para análisis.
+# Variable principal de femicidios para analisis.
 
  femicidios_registrados = sum(femicidio_art_21) + sum(femicidio_otros_contextos),
 
-# Total de todas las categorías territoriales disponibles.
+# Total de todas las categorias territoriales disponibles.
      
  muertes_violentas_mujeres_total =
        sum( femicidio_art_21) +
@@ -622,3 +622,409 @@ nrow(catalogo_cantones)
    fileEncoding = "UTF-8"
  )
  
+ 
+ 
+ # =====
+ # BASE DE DATOS DE MATRCULA 
+ # =====
+ 
+ # IMPORTAR BASE DE MATRICULA 
+ 
+ 
+ archivo_matricula <- "bd_matricula_sector_estatal_2021_2025.xlsx"
+ 
+ matricula_original <- read_excel(
+   archivo_matricula,
+   sheet = "Archivo 2021-2025"
+ )
+ 
+ 
+ # LIMPIAR Y PREPARAR LA BASE 
+ 
+ 
+ # NOTA:Se conservan únicamente los años del proyecto: 2022, 2023 y 2024.
+ #      La información territorial se interpreta según el cantón
+ #      de residencia/procedencia de la persona estudiante.
+ 
+ matricula_limpia <- matricula_original %>%
+   transmute(
+     anio = as.integer(AÑO),
+     tipo_matricula = limpiar_texto(TIPO_MATRICULA),
+     universidad = limpiar_texto(UNIVERSIDAD),
+     carrera = limpiar_texto(CARRERA),
+     sexo = limpiar_texto(SEXO),
+     
+     provincia_original = PROVINCIA_ESTUDIANTE,
+     canton_original = CANTON_ESTUDIANTE,
+     
+     provincia = limpiar_texto(PROVINCIA_ESTUDIANTE),
+     canton = limpiar_texto(CANTON_ESTUDIANTE),
+     
+     pais_estudiante = limpiar_texto(PAIS_ESTUDIANTE)
+   ) %>%
+   filter(anio %in% c(2022, 2023, 2024)) %>%
+   mutate(
+     canton = case_when(
+       canton %in% c("MONTEVERDE", "MONTE VERDE") ~ "PUNTARENAS",
+       canton == "PUERTO JIMENEZ" ~ "GOLFITO",
+       canton == "LEON CORTES CASTRO" ~ "LEON CORTES",
+       TRUE ~ canton
+     )
+   )
+ 
+ 
+ # NOTA: Monteverde es distrito del canton de Puntarenas.
+ #       Se mapea al nombre del canton tal como aparece en el catalogo ICC. 
+ # NOTA: Puerto Jimenez es distrito del canton de Golfito.
+ # NOTA: El nombre oficial en el catalogo ICC es LEON CORTES sin Castro.
+ 
+ # REVISAR REGISTROS SIN CANTON 
+ 
+ matricula_sin_canton <- matricula_limpia %>%
+   filter(is.na(canton) | canton == "") %>%
+   count(anio, name = "registros_sin_canton")
+ 
+ print(matricula_sin_canton)
+ 
+ 
+ # RESUMEN NUMERICO POR CANTON 
+ 
+ # NOTA; Se excluyen EXTRANJERO y SIN INFORMACION porque no se pueden
+ #      asociar a un cantón costarricense.
+ 
+ matricula_resumen_numerico <- matricula_limpia %>%
+   filter(
+     !is.na(canton),
+     canton != "",
+     canton != "EXTRANJERO",
+     canton != "SIN INFORMACION"
+   ) %>%
+   group_by(anio, provincia, canton) %>%
+   summarise(
+     matricula_estatal_total = n(),
+     
+     matricula_mujeres = sum(
+       sexo == "MUJER",
+       na.rm = TRUE
+     ),
+     
+     matricula_hombres = sum(
+       sexo == "HOMBRE",
+       na.rm = TRUE
+     ),
+     
+     matricula_sexo_no_especificado = sum(
+       !sexo %in% c("MUJER", "HOMBRE"),
+       na.rm = TRUE
+     ),
+     porcentaje_mujeres = round(
+       matricula_mujeres / matricula_estatal_total * 100,
+       2
+     ),
+     
+     porcentaje_hombres = round(
+       matricula_hombres / matricula_estatal_total * 100,
+       2
+     ),
+     
+     matricula_primer_ingreso = sum(
+       tipo_matricula == "PRIMER INGRESO",
+       na.rm = TRUE
+     ),
+     
+     matricula_no_primer_ingreso = sum(
+       tipo_matricula == "NO PRIMER INGRESO",
+       na.rm = TRUE
+     ),
+     
+     cantidad_universidades_distintas = n_distinct(
+       universidad[!is.na(universidad) & universidad != ""]
+     ),
+     
+     cantidad_carreras_distintas = n_distinct(
+       carrera[!is.na(carrera) & carrera != ""]
+     ),
+     
+     .groups = "drop"
+   )
+ 
+ 
+ # UNIVERSIDAD PREDOMINANTE POR CANTON Y ANO 
+ 
+ universidad_predominante <- matricula_limpia %>%
+   filter(
+     !is.na(canton),
+     canton != "",
+     canton != "EXTRANJERO",
+     canton != "SIN INFORMACION",
+     !is.na(universidad),
+     universidad != ""
+   ) %>%
+   count(
+     anio,
+     provincia,
+     canton,
+     universidad,
+     name = "cantidad_universidad"
+   ) %>%
+   group_by(anio, provincia, canton) %>%
+   slice_max(
+     order_by = cantidad_universidad,
+     n = 1,
+     with_ties = FALSE
+   ) %>%
+   ungroup() %>%
+   rename(
+     universidad_predominante = universidad,
+     cantidad_universidad_predominante = cantidad_universidad
+   )
+ 
+ 
+ # CARRERA PREDOMIMANTE POR CANTON Y ANO 
+ 
+ carrera_predominante <- matricula_limpia %>%
+   filter(
+     !is.na(canton),
+     canton != "",
+     canton != "EXTRANJERO",
+     canton != "SIN INFORMACION",
+     !is.na(carrera),
+     carrera != ""
+   ) %>%
+   count(
+     anio,
+     provincia,
+     canton,
+     carrera,
+     name = "cantidad_carrera"
+   ) %>%
+   group_by(anio, provincia, canton) %>%
+   slice_max(
+     order_by = cantidad_carrera,
+     n = 1,
+     with_ties = FALSE
+   ) %>%
+   ungroup() %>%
+   rename(
+     carrera_predominante = carrera,
+     cantidad_carrera_predominante = cantidad_carrera
+   )
+ 
+ 
+ 
+ # UNIR TODOS LOS INDICADORES DE MATRICULA 
+ 
+ matricula_resumen <- matricula_resumen_numerico %>%
+   left_join(
+     universidad_predominante %>%
+       select(
+         anio,
+         provincia,
+         canton,
+         universidad_predominante,
+         cantidad_universidad_predominante
+       ),
+     by = c("anio", "provincia", "canton")
+   ) %>%
+   left_join(
+     carrera_predominante %>%
+       select(
+         anio,
+         provincia,
+         canton,
+         carrera_predominante,
+         cantidad_carrera_predominante
+       ),
+     by = c("anio", "provincia", "canton")
+   ) %>%
+   arrange(anio, provincia, canton)
+ 
+ 
+ # ASIGNAR CODIGO CANTONAL DESDE CATALOGO DEL ICCC
+ 
+ # catalogo_cantones debe existir porque se crea en la parte
+ # anterior del script de ICC.
+ 
+ matricula_con_codigo <- matricula_resumen %>%
+   left_join(
+     catalogo_cantones %>%
+       select(codigo_canton, canton),
+     by = "canton"
+   )
+ 
+ 
+ # REVUSAR CATONES SIN CODIGO CANTONAL 
+ 
+ cantones_matricula_sin_codigo <- matricula_con_codigo %>%
+   filter(is.na(codigo_canton)) %>%
+   select(anio, provincia, canton) %>%
+   distinct() %>%
+   arrange(anio, provincia, canton)
+ 
+ print(cantones_matricula_sin_codigo)
+ 
+ 
+ # CREAR BASE DE MATRICULA, LISTA PARA JOIN
+ 
+ matricula_cantonal <- matricula_con_codigo %>%
+   filter(!is.na(codigo_canton)) %>%
+   select(
+     anio,
+     codigo_canton,
+     provincia,
+     canton,
+     
+     matricula_estatal_total,
+     matricula_mujeres,
+     matricula_hombres,
+     matricula_sexo_no_especificado,
+     porcentaje_mujeres,
+     porcentaje_hombres,
+     matricula_primer_ingreso,
+     matricula_no_primer_ingreso,
+     
+     universidad_predominante,
+     cantidad_universidad_predominante,
+     
+     carrera_predominante,
+     cantidad_carrera_predominante,
+     
+     cantidad_universidades_distintas,
+     cantidad_carreras_distintas
+   ) %>%
+   arrange(anio, codigo_canton)
+ 
+ 
+ # CONTROLES DE CALIDAD MATRICULA
+ 
+ # Revisamos si hay duplicados por canton - ano
+ matricula_cantonal %>%
+   count(anio, codigo_canton) %>%
+   filter(n > 1)
+ 
+ # Revisamos la cantidad de cantones con matricula por año.
+ matricula_cantonal %>%
+   count(anio)
+ 
+ # Revisamos si hay faltantes en las variables numericas principales.
+ 
+ matricula_cantonal %>%
+   summarise(
+     faltantes_matricula_total = sum(is.na(matricula_estatal_total)),
+     faltantes_mujeres = sum(is.na(matricula_mujeres)),
+     faltantes_hombres = sum(is.na(matricula_hombres)),
+     faltantes_sexo_no_especificado = sum(is.na(matricula_sexo_no_especificado)),
+     faltantes_porcentaje_mujeres = sum(is.na(porcentaje_mujeres)),
+     faltantes_porcentaje_hombres = sum(is.na(porcentaje_hombres)),
+     faltantes_primer_ingreso = sum(is.na(matricula_primer_ingreso)),
+     faltantes_no_primer_ingreso = sum(is.na(matricula_no_primer_ingreso))
+   )
+ 
+ 
+ # Verificamos que el total de matricula coincide con la suma por sexo.
+ 
+ matricula_cantonal %>%
+   mutate(
+     diferencia_sexo =
+       matricula_estatal_total -
+       matricula_mujeres -
+       matricula_hombres -
+       matricula_sexo_no_especificado
+   ) %>%
+   filter(diferencia_sexo != 0)
+ 
+ # Verificamos que el total coincide con primer ingreso + no primer ingreso.
+ 
+ matricula_cantonal %>%
+   mutate(
+     diferencia_tipo_matricula =
+       matricula_estatal_total -
+       matricula_primer_ingreso -
+       matricula_no_primer_ingreso
+   ) %>%
+   filter(diferencia_tipo_matricula != 0)
+ 
+ 
+ 
+ # UNION FUNAL : ICC, FEMICIDIOS Y MATRICULA 
+ 
+ base_final_tres_fuentes <- icc_femicidios %>%
+   left_join(
+     matricula_cantonal %>%
+       select(
+         anio,
+         codigo_canton,
+         matricula_estatal_total,
+         matricula_mujeres,
+         matricula_hombres,
+         matricula_sexo_no_especificado,
+         porcentaje_mujeres,
+         porcentaje_hombres,
+         matricula_primer_ingreso,
+         matricula_no_primer_ingreso,
+         universidad_predominante,
+         cantidad_universidad_predominante,
+         carrera_predominante,
+         cantidad_carrera_predominante,
+         cantidad_universidades_distintas,
+         cantidad_carreras_distintas
+       ),
+     by = c("anio", "codigo_canton"),
+     relationship = "one-to-one"
+   ) %>%
+   arrange(anio, codigo_canton)
+ 
+ 
+ # CONTROLES DE CALIDAD A BASE FINAL 
+ 
+ 
+ base_final_tres_fuentes %>%
+   count(anio, codigo_canton) %>%
+   filter(n > 1)
+ 
+ nrow(icc_femicidios)
+ nrow(base_final_tres_fuentes)
+ 
+ # revisamos cantones por año.
+ base_final_tres_fuentes %>%
+   count(anio)
+ 
+ # revisamos cantones que no recibieron matricula.
+ 
+ base_final_tres_fuentes %>%
+   filter(is.na(matricula_estatal_total)) %>%
+   select(anio, codigo_canton, canton) %>%
+   arrange(anio, codigo_canton)
+ 
+ # revisamos si hay faltantes de variables nuevas.
+ 
+ base_final_tres_fuentes %>%
+   summarise(
+     faltantes_matricula_total = sum(is.na(matricula_estatal_total)),
+     faltantes_mujeres = sum(is.na(matricula_mujeres)),
+     faltantes_hombres = sum(is.na(matricula_hombres)),
+     faltantes_sexo_no_especificado = sum(is.na(matricula_sexo_no_especificado)),
+     faltantes_porcentaje_mujeres = sum(is.na(porcentaje_mujeres)),
+     faltantes_porcentaje_hombres = sum(is.na(porcentaje_hombres)),
+     faltantes_primer_ingreso = sum(is.na(matricula_primer_ingreso)),
+     faltantes_no_primer_ingreso = sum(is.na(matricula_no_primer_ingreso))
+   )
+ 
+ 
+ # GUARDAMOS LA BASE FINAL 
+ 
+ write.csv(
+   matricula_cantonal,
+   "matricula_estatal_cantonal_2022_2024.csv",
+   row.names = FALSE,
+   fileEncoding = "UTF-8"
+ )
+ 
+ write.csv(
+   base_final_tres_fuentes,
+   "base_final_icc_femicidios_matricula_2022_2024.csv",
+   row.names = FALSE,
+   fileEncoding = "UTF-8"
+ )
+ 
+

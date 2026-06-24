@@ -205,4 +205,6 @@ variables_disponibles <- verificar_variables_por_dimension(
 variables_disponibles
 
 
-source("02_funciones_programacion.R")
+
+# NOTA IMPORTANTE: El punto c queda pendiente porque hay que definir el documento final 
+# source("02_funciones_programacion.R")

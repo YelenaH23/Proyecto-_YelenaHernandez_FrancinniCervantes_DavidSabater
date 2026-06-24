@@ -88,6 +88,39 @@ variables_por_dimension <- list(
 
 variables_por_dimension$educacion
 
+
+
+# FUNCION PARA RESUMEN ESTADISTICO 
+
+# NOTA: Esta funcion recibe una base de datos y el nombre de una variable
+#       numerica. Luego calcula medidas descriptivas basicas para facilitar el
+#       analisis de competitiividad, femicidios y matricu;a 
+
+resumen_estadistico <- function(datos, variable) {
+  
+  # Extrae la columna indicada usando su nombre.
+  valores <- datos[[variable]]
+  
+  # Crea y devuelve un data frame con las estadísticas principales.
+  data.frame(
+    variable = variable,
+    minimo = min(valores, na.rm = TRUE),
+    media = mean(valores, na.rm = TRUE),
+    mediana = median(valores, na.rm = TRUE),
+    desviacion_estandar = sd(valores, na.rm = TRUE),
+    maximo = max(valores, na.rm = TRUE),
+    valores_faltantes = sum(is.na(valores))
+  )
+}
+
+# EJEMPLO 
+resumen_estadistico(
+  datos = base_final,
+  variable = "indice_competitividad"
+)
+
+
+
 # FUNCION PARA VERIFICAR VARIABLES 
 
 # NOTA: Esta funcion verifica si una variable indicada por el usuario
@@ -206,5 +239,10 @@ variables_disponibles
 
 
 
+
+
 # NOTA IMPORTANTE: El punto c queda pendiente porque hay que definir el documento final 
+
 # source("02_funciones_programacion.R")
+
+

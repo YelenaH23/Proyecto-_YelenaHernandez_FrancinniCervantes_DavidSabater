@@ -12,6 +12,7 @@ output:
     highlight: tango
 ---
 
+```{r setup, message=FALSE, warning=FALSE}}
 ```{r setup, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -30,6 +31,7 @@ library(ggplot2)
 library(tidyverse)
 library(readxl)
 library(openxlsx)
+library(plotly)
 
 source("02_funciones_programacion.R")
 ```
@@ -189,6 +191,7 @@ base_final <- icc_femicidios %>%
   ) %>%
   arrange(anio, codigo_canton)
 ```
+
 
 ### Validación de registros duplicados 
 

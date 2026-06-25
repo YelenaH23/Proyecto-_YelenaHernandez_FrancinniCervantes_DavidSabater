@@ -28,7 +28,9 @@ library(janitor)
 ```
 
 
-$$BASES_DE_DATOS_DEL_ICC$$ 
+\section*{BASES_DE_DATOS_DEL_ICC}
+
+
 FUNCION PARA LIMPIAR EL TEXTO 
 
 ```{r}
@@ -129,9 +131,9 @@ icc_unificado <- bind_rows(
 Verificamos:
 
 
-Cantidad de registros por ano
+Cantidad de registros por año
 
-NOTA: es correcto que en 2024 de 82 en lugar de 81, dado que en este alo se anadio el canton de Rio Cuarto 
+NOTA: es correcto que en 2024 de 82 en lugar de 81, dado que en este año se anadio el canton de Rio Cuarto 
 
 ```{r}
 
@@ -146,7 +148,7 @@ total de registros
 nrow(icc_unificado)
 ```
 
-revisamos si existe algun canton repetido en el mismo ano 
+revisamos si existe algun canton repetido en el mismo año 
 
 ```{r}
 icc_unificado %>%
@@ -166,7 +168,7 @@ HOMOGENIZAR LA ESCALA DE LOS INDICADORES
 
 NOTA:  
 -  En 2022 los indices estan entre 0 y 1.
--  En 2023 y 2024 estsn entre 0 y 100.
+-  En 2023 y 2024 estan entre 0 y 100.
 -  Es por eso que unicamente los datos de 2022 se multiplican por 100.
 
 ```{r}
@@ -210,7 +212,7 @@ icc_unificado <- icc_unificado %>%
 
 ```
 
-Verificar cuantos cantones quedaron por ano 
+Verificar cuantos cantones quedaron por año 
 
 ```{r}
 icc_unificado %>%
@@ -278,11 +280,11 @@ write.csv(
 ```
 
 
-$$BASES_DE_DATOS_DE_FEMICIDIOS$$
+\section*{BASES DE DATOS DE FEMICIDIOS}
 
 IMPORTAR LA BASE DE DATOS DE FEMICIDIOS
 
-NOTA: La base utilizada corresponde a homicidiosndoloroos y contine diferentes clasificaciones de muertes violentas de mujeres.A partir de ella seidentificaron y resumieron las categorias especificas de femicidio para construir indicadores cantonales anuales.
+NOTA: La base utilizada corresponde a homicidios doloroos y contine diferentes clasificaciones de muertes violentas de mujeres. A partir de ella se identificaron y resumieron las categorias especificas de femicidio para construir indicadores cantonales anuales.
 
 ```{r}
 
@@ -538,7 +540,7 @@ write.csv(
 ```
 
 
-$$UNION-ENTRE-EL-ICC-Y-FEMICIDIOS$$ 
+\section*{UNION-ENTRE-EL-ICC-Y-FEMICIDIOS}
 
 
 ASEGURAMOS EL FORMATO DE LAS VARIABLES DE UNIÓN
@@ -636,7 +638,7 @@ NOTA: Los NA significan que ese canton y año no tuvo registros en la base terri
 
 CONTROLES DE CALIDAD DE LA UNION
 ```{r}
-# Verificamos la cantidad de registros por ano 
+# Verificamos la cantidad de registros por anio 
  
  icc_femicidios %>%
    count(anio)
@@ -696,7 +698,7 @@ GUARDAR LA BASE FINAL UNIFICADA ICC Y Femicidios
 
 ```
 
-$$BASE-DE-DATOS-DE-MATRCULA$$
+\section*{BASE-DE-DATOS-DE-MATRCULA}
 
 IMPORTAR BASE DE MATRICULA 
 ```{r}
@@ -711,7 +713,7 @@ archivo_matricula <- "bd_matricula_sector_estatal_2021_2025.xlsx"
 
  LIMPIAR Y PREPARAR LA BASE 
 
-NOTA:Se conservan únicamente los años del proyecto: 2022, 2023 y 2024.La información territorial se interpreta según el cantón de residencia/procedencia de la persona estudiante.
+NOTA: Se conservan únicamente los años del proyecto: 2022, 2023 y 2024. La información territorial se interpreta según el cantón de residencia/procedencia de la persona estudiante.
 ```{r}
  matricula_limpia <- matricula_original %>%
    transmute(
@@ -760,7 +762,7 @@ matricula_sin_canton <- matricula_limpia %>%
  
 RESUMEN NUMERICO POR CANTON 
 
-NOTA; Se excluyen EXTRANJERO y SIN INFORMACION porque no se pueden asociar a un cantón costarricense.
+NOTA: Se excluyen EXTRANJERO y SIN INFORMACION porque no se pueden asociar a un cantón costarricense.
 
 ```{r}
  matricula_resumen_numerico <- matricula_limpia %>%
@@ -822,7 +824,7 @@ NOTA; Se excluyen EXTRANJERO y SIN INFORMACION porque no se pueden asociar a un 
  
 ```
 
-UNIVERSIDAD PREDOMINANTE POR CANTON Y ANO 
+UNIVERSIDAD PREDOMINANTE POR CANTON Y AÑO 
 
 ```{r}
 universidad_predominante <- matricula_limpia %>%
@@ -855,7 +857,8 @@ universidad_predominante <- matricula_limpia %>%
  
 ```
 
-CARRERA PREDOMIMANTE POR CANTON Y ANO 
+CARRERA PREDOMIMANTE POR CANTON Y AÑO 
+
 ```{r}
 
 carrera_predominante <- matricula_limpia %>%
@@ -922,7 +925,7 @@ carrera_predominante <- matricula_limpia %>%
  
 ```
  
- ASIGNAR CODIGO CANTONAL DESDE CATALOGO DEL ICCC
+ ASIGNAR CODIGO CANTONAL DESDE CATALOGO DEL ICC
 
 ```{r}
  matricula_con_codigo <- matricula_resumen %>%
@@ -934,6 +937,7 @@ carrera_predominante <- matricula_limpia %>%
 ```
 
 REVISAR CATONES SIN CODIGO CANTONAL 
+
 ```{r}
 cantones_matricula_sin_codigo <- matricula_con_codigo %>%
    filter(is.na(codigo_canton)) %>%
@@ -946,6 +950,7 @@ cantones_matricula_sin_codigo <- matricula_con_codigo %>%
 ```
 
 CREAR BASE DE MATRICULA, LISTA PARA JOIN
+
 ```{r}
 matricula_cantonal <- matricula_con_codigo %>%
    filter(!is.na(codigo_canton)) %>%
@@ -979,8 +984,9 @@ matricula_cantonal <- matricula_con_codigo %>%
 ```
 
 CONTROLES DE CALIDAD MATRICULA
+
 ```{r}
-# Revisamos si hay duplicados por canton - ano
+# Revisamos si hay duplicados por canton - añ o
  matricula_cantonal %>%
    count(anio, codigo_canton) %>%
    filter(n > 1)
@@ -1064,6 +1070,7 @@ base_final_tres_fuentes <- icc_femicidios %>%
 ```
 
 CONTROLES DE CALIDAD A BASE FINAL 
+
 ```{r}
 
  base_final_tres_fuentes %>%

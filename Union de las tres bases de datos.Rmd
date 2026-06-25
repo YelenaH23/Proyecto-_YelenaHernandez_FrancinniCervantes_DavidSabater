@@ -1114,7 +1114,7 @@ GUARDAMOS LA BASE FINAL
  
  write.csv(
    base_final_tres_fuentes,
-   "base_final_icc_femicidios_matricula_2022_2024.csv",
+   "base_final.csv",
    row.names = FALSE,
    fileEncoding = "UTF-8"
  )

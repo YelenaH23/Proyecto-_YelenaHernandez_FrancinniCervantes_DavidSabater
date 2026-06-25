@@ -17,9 +17,9 @@ base_final <- read.csv(
 
 # Hacemos revision inicial de la base (mejor confirmar)
 
-head(base_final)
-str(base_final)
-dim(base_final)
+#head(base_final)
+#str(base_final)
+#dim(base_final)
 
 
 
@@ -45,7 +45,7 @@ variables_numericas <- c(
   "matricula_no_primer_ingreso"
 )
 
-variables_numericas
+#variables_numericas
 
 
 # LISTA DE VARIABLES POR DIMENSION 
@@ -86,7 +86,7 @@ variables_por_dimension <- list(
   )
 )
 
-variables_por_dimension$educacion
+#variables_por_dimension$educacion
 
 
 
@@ -114,10 +114,9 @@ resumen_estadistico <- function(datos, variable) {
 }
 
 # EJEMPLO 
-resumen_estadistico(
-  datos = base_final,
-  variable = "indice_competitividad"
-)
+#resumen_estadistico(
+#  datos = base_final,
+#  variable = "indice_competitividad")
 
 
 
@@ -142,15 +141,13 @@ verificar_variable <- function(datos, variable) {
 
 # Ejemplo de prueba
 
-verificar_variable(
-  datos = base_final,
-  variable = "indice_competitividad"
-)
+#verificar_variable(
+#  datos = base_final,
+#  variable = "indice_competitividad")
 
-verificar_variable(
-  datos = base_final,
-  variable = "variable_inexistente"
-)
+#verificar_variable(
+#  datos = base_final,
+#  variable = "variable_inexistente")
 
 
 # FUNCION PARA CREAR ETIQUETAS LEGIBLES
@@ -177,16 +174,15 @@ crear_etiquetas_variables <- function(variables) {
 }
 
 etiquetas_variables <- crear_etiquetas_variables(  # crea etiquetas para las variables numericas del proyecto
-  variables_numericas
-)
+  variables_numericas)
 
 # Mostrar 
 
-etiquetas_variables
+#etiquetas_variables
 
 # Ejemplo
 
-etiquetas_variables["femicidios_registrados"]
+#etiquetas_variables["femicidios_registrados"]
 
 
 # FUNCION PARA CONTAR VALORES FALTANTES 
@@ -203,14 +199,14 @@ contar_faltantes <- function(datos) {
 
 # Aplicamos la función a la base final
 
-faltantes_base_final <- contar_faltantes(base_final)
+#faltantes_base_final <- contar_faltantes(base_final)
 
 # Mostrar la cantidad de valores faltantes por variable
 
-faltantes_base_final
+#faltantes_base_final
 
 # En el caso de evaluar una variable
-contar_faltantes(base_final["indice_competitividad"])
+# contar_faltantes(base_final["indice_competitividad"])
 
 
 # FUNCION PARA ORGANIZAR VARIABLES POR DIMENSION
@@ -230,12 +226,11 @@ verificar_variables_por_dimension <- function(datos, lista_variables) {
 
 variables_disponibles <- verificar_variables_por_dimension(
   datos = base_final,
-  lista_variables = variables_por_dimension
-)
+  lista_variables = variables_por_dimension)
 
 # Mostrar las variables disponibles por cada dimension
 
-variables_disponibles
+#variables_disponibles
 
 
 

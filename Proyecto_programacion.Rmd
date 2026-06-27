@@ -1,7 +1,7 @@
 ---
 title: "Proyecto"
-subtitle: "Poner el tema cuando ya este definido"
-author: "Francini Cervantes, Yelena Hernandez, David Sabater"
+subtitle: "Competitividad cantonal, femicidios y matrícula estatal en Costa Rica 2022-2024"
+author: "Francinni Cervantes, Yelena Hernandez, David Sabater"
 date: "`r format(Sys.Date(), '%d de %B de %Y')`"
 output:
   html_document:
@@ -13,22 +13,295 @@ output:
 ---
 
 ```{r setup, message=FALSE, warning=FALSE}}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE)
 
-#Librerias
+```
+
+```{r}
 library(shiny)
 library(dplyr)
 library(tidyr)
 library(lubridate)
 library(magrittr)
 library(ggplot2)
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(plotly)
+
+source("02_funciones_programacion.R")
+```
+
+# Introducción
+
+Este proyecto integra información cantonal de Costa Rica correspondiente al período 2022-2024. La base final reúne indicadores del Índice de Competitividad Cantonal, registros de femicidios y otras muertes violentas de mujeres, así como datos de matrícula universitaria estatal.
+
+La unidad de análisis definida es el cantón-año. Esto permite observar cada cantón para cada uno de los tres años estudiados y comparar sus condiciones de competitividad, educación universitaria estatal y registros de violencia contra las mujeres.
+
+# Justificación
+
+La integración de estas tres fuentes permite analizar los cantones desde una perspectiva multidimensional. El Índice de Competitividad Cantonal aporta información relacionada con desarrollo económico, infraestructura, innovación, empleo, gobierno y calidad de vida. Los registros del Poder Judicial permiten identificar femicidios y otras muertes violentas de mujeres por cantón. Finalmente, la matrícula universitaria estatal permite aproximarse a la presencia y composición de la educación superior pública en los territorios.
+
+El propósito del proyecto no es afirmar relaciones de causalidad entre las variables. Más bien, busca explorar patrones territoriales, diferencias entre cantones y posibles asociaciones descriptivas entre competitividad, matrícula estatal y femicidios registrados.
+
+# Objetivos
+
+## Objetivo general
+
+Analizar descriptivamente la relación entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024, mediante la integración, visualización y exploración interactiva de datos públicos.
+
+## Objetivos específicos
+
+1. Integrar y depurar información cantonal proveniente del Índice de Competitividad Cantonal, registros de homicidios y femicidios de mujeres, y matrícula universitaria estatal para los años 2022, 2023 y 2024.
+
+2. Describir la distribución territorial y temporal de los indicadores de competitividad, femicidios registrados, muertes violentas de mujeres y matrícula universitaria estatal.
+
+3. Explorar asociaciones descriptivas entre el índice de competitividad cantonal, variables de matrícula estatal y registros de femicidios.
+
+4. Desarrollar una aplicación Shiny que permita filtrar, visualizar y consultar los indicadores integrados por cantón, año y dimensión temática.
+
+# Fuentes de datos
+
+## Índice de Competitividad Cantonal
+
+Esta fuente aporta el índice general de competitividad, el ranking, la categoría de competitividad y los pilares económico, empresarial, gobierno, laboral, infraestructura, innovación y calidad de vida.
+
+## Registros de femicidios y muertes violentas de mujeres
+
+La información del Poder Judicial permite identificar femicidios clasificados por artículo 21, femicidios en otros contextos, femicidios ampliados, sospechas de femicidio y otras categorías de muertes violentas de mujeres.
+
+## Matrícula universitaria estatal
+
+La base de matrícula estatal aporta información sobre matrícula total, matrícula por sexo, porcentajes de mujeres y hombres, primer ingreso, universidad predominante, carrera predominante y diversidad de universidades y carreras por cantón.
+
+# Procesamiento de los datos
+
+## Unidad de análisis y período de estudio
+
+La unidad de análisis del proyecto es el cantón-año. Cada fila de la base final representa un cantón costarricense en uno de los años 2022, 2023 o 2024.
+
+La integración final contiene 244 registros y 38 variables. Los años 2022 y 2023 contienen información para 81 cantones, mientras que en 2024 se incluyen 82 cantones debido a la incorporación de Río Cuarto.
+
+## Limpieza y estandarización de variables
+
+Antes de unir las fuentes, se realizó una limpieza de nombres y variables territoriales. Los nombres de cantones se transformaron a mayúsculas, se eliminaron espacios innecesarios y se quitaron tildes para reducir diferencias de escritura entre bases.
+
+Además, se utilizaron como llaves principales las variables `anio` y `codigo_canton`. Estas variables permiten identificar de forma única cada observación correspondiente a un cantón en un año específico.
+
+## Procesamiento del Índice de Competitividad Cantonal
+
+Para el Índice de Competitividad Cantonal se integraron los datos de 2022, 2023 y 2024. Debido a que los indicadores del año 2022 se encontraban en una escala de 0 a 1, mientras que los años 2023 y 2024 utilizaban una escala de 0 a 100, los valores de 2022 se multiplicaron por 100 para homologar la escala.
+
+También se construyó una categoría uniforme de competitividad a partir del índice general: muy bajo, bajo, medio, alto y muy alto. Finalmente, se creó un catálogo cantonal con los códigos y nombres estandarizados de los cantones.
+
+## Procesamiento de femicidios y muertes violentas de mujeres
+
+Los registros de homicidios dolosos se filtraron para conservar únicamente los años 2022, 2023 y 2024. Posteriormente, se identificaron las categorías relacionadas con femicidio y muertes violentas de mujeres.
+
+La información se resumió por año y cantón para obtener variables como femicidio artículo 21, femicidio en otros contextos, femicidio ampliado, sospecha de femicidio, homicidios de mujeres no clasificados como femicidio y total de muertes violentas de mujeres.
+
+La variable `femicidios_registrados` corresponde a la suma de femicidios del artículo 21 y femicidios en otros contextos.
+
+## Procesamiento de matrícula universitaria estatal
+
+La base de matrícula se filtró para conservar los años del proyecto. Se eliminaron registros sin cantón, con procedencia extranjera o sin información territorial, debido a que no podían asociarse a un cantón costarricense.
+
+Posteriormente, se calcularon indicadores de matrícula total, matrícula de mujeres y hombres, sexo no especificado, porcentajes por sexo, primer ingreso, no primer ingreso, universidades distintas, carreras distintas, universidad predominante y carrera predominante.
+
+También se realizaron correcciones territoriales para homologar nombres que no coincidían con el catálogo cantonal, como Monteverde, Puerto Jiménez y León Cortés Castro.
+
+## Unión de las tres fuentes
+
+La unión se realizó mediante `left_join()`, utilizando las variables `anio` y `codigo_canton`.
+
+Se utilizó como base principal el Índice de Competitividad Cantonal. Por esta razón, el uso de `left_join()` permitió conservar todos los cantones disponibles en el ICC, incluso cuando algún cantón no presentaba registros de femicidios en determinado año.
+
+Después de unir los datos de femicidios, los valores faltantes en las variables de violencia se reemplazaron por cero. Esto representa que no existían registros territoriales para ese cantón y año dentro de la base utilizada.
+
+Finalmente, la matrícula universitaria estatal se incorporó mediante otro `left_join()` usando las mismas llaves. Se verificó que no existieran duplicados en la combinación de año y código cantonal, que el número de filas se conservara y que las variables principales no presentaran valores faltantes.
+
+## Fragmentos principales de código
+
+A continuación se presentan algunos fragmentos representativos del proceso de limpieza, transformación y unión. El código completo se encuentra documentado en el script de procesamiento y en el repositorio del proyecto.
+
+### Estandarización de nombres territoriales
+
+```{r ejemplo-limpieza-territorial, eval=FALSE}
+
+limpiar_texto <- function(x) {
+  x %>%
+    as.character() %>%
+    str_squish() %>%
+    str_to_upper() %>%
+    stringi::stri_trans_general("Latin-ASCII")
+}
+```
+
+
+### Transformación de variables del ICC 
+
+```{r ejemplo-de-transformacion-del-ICC, eval= FALSE}
+
+icc_2022_limpio <- icc_2022_2023_original %>%
+  filter(ano == 2022) %>%
+  transmute(
+    anio = as.integer(ano),
+    codigo_canton = as.integer(cid),
+    canton = limpiar_texto(canton),
+    indice_competitividad = icc_p,
+    ranking_competitividad = rank_icc_p
+  )
+```
+
+### Unión final entre bases 
+
+La unión final se realizó a partir de la base `icc_femicidios`, que ya contenía la información integrada de competitividad y femicidios. Posteriormente, se incorporaron los indicadores de matrícula universitaria estatal mediante `left_join()`.
+
+Las variables `anio` y `codigo_canton` se utilizaron como llaves de unión, ya que identifican de forma única cada cantón en cada año. Además, `relationship = "one-to-one"` valida que no existan duplicados en las llaves antes de realizar la unión.
+
+```{r ejemplo-union-entre-bases, eval=FALSE}
+
+base_final <- icc_femicidios %>%
+  left_join(
+    matricula_cantonal %>%
+      select(
+        anio,
+        codigo_canton,
+        matricula_estatal_total,
+        matricula_mujeres,
+        matricula_hombres,
+        matricula_sexo_no_especificado,
+        porcentaje_mujeres,
+        porcentaje_hombres,
+        matricula_primer_ingreso,
+        matricula_no_primer_ingreso,
+        universidad_predominante,
+        cantidad_universidad_predominante,
+        carrera_predominante,
+        cantidad_carrera_predominante,
+        cantidad_universidades_distintas,
+        cantidad_carreras_distintas
+      ),
+    by = c("anio", "codigo_canton"),
+    relationship = "one-to-one"
+  ) %>%
+  arrange(anio, codigo_canton)
+```
+
+
+### Validación de registros duplicados 
+
+La siguiente validación comprueba que no existan registros repetidos para la combinación de año y código cantonal. Si el resultado está vacío, significa que no se identificaron duplicados.
+
+```{r ejemplo-de-validacion-de-registos duplicados, eval=FALSE}
+
+base_final %>%
+  count(anio, codigo_canton) %>%
+  filter(n > 1)
+```
+
+## Base final integrada
+
+La base final reúne indicadores de competitividad, violencia contra las mujeres y matrícula universitaria estatal. Esta base será utilizada para las visualizaciones, el análisis estadístico y la aplicación Shiny.
+
+
+```{r resumen-base-final}
+
+dim(base_final)
+
+base_final%>%
+  count(anio)
 
 ```
 
-# Recoleccion y procesamientos de datos
 
-## Limpieza, transformación y unión de los datos 
-```{r}
+# Programación en R 
+
+Para organizar el código del proyecto se creó el script `02_funciones_programacion.R`. Este archivo reúne estructuras de datos y funciones reutilizables para la futura aplicación Shiny y para el análisis de la base final.
+
+El script se integra con este documento mediante la función `source()`, lo que permite utilizar sus objetos y funciones sin copiar nuevamente todo el código.
+
+## Estructuras de datos utilizadas
+
+La base integrada se almacena en el data frame `base_final`, el cual contiene la información de competitividad, femicidios y matrícula universitaria estatal organizada por cantón y año.
+
+Se creó el vector `variables_numericas`, el cual reúne los nombres de las variables cuantitativas principales que pueden utilizarse posteriormente en tablas, análisis estadísticos, gráficos y filtros de la aplicación Shiny.
+
+También se creó la lista `variables_por_dimension`, la cual organiza los indicadores en tres dimensiones: competitividad, violencia contra las mujeres y educación universitaria estatal. Esta estructura facilita seleccionar grupos de variables según el tema de interés.
+
+
+```{r estructuras-programacion}
+
+variables_numericas
+
+variables_por_dimension$educacion
+```
+
+
+## Funciones personalizadas
+
+Se desarrollaron funciones reutilizables para apoyar la exploración, validación y presentación de la base final.
+
+La función `resumen_estadistico()` recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo y cantidad de valores faltantes.
+
+```{r ejemplo-resumen-estadistico}
+
+resumen_estadistico(
+  datos = base_final,
+  variable = "indice_competitividad"
+)
+```
+
+La función `verificar_variable()` comprueba si una variable existe dentro de la base antes de utilizarla en gráficos, filtros o análisis. Para esto utiliza una estructura condicional `if/else`.
+
+```{r ejemplo-if-else}
+
+verificar_variable(
+  datos = base_final,
+  variable = "indice_competitividad"
+)
+```
+
+La función `crear_etiquetas_variables()` transforma nombres técnicos de columnas en etiquetas más legibles. Esta función utiliza un ciclo `for` para recorrer el vector de variables.
+
+```{r ejemplo-for}
+etiquetas_variables["femicidios_registrados"]
+```
+
+La función `contar_faltantes()` utiliza `sapply()` para contar automáticamente los valores faltantes de cada columna seleccionada.
+
+```{r ejemplo-sapply}
+contar_faltantes(
+  base_final[c("indice_competitividad",
+             "femicidios_registrados",
+             "matricula_estatal_total")]
+)
+```
+
+La función `verificar_variables_por_dimension()` utiliza `lapply()` para recorrer cada grupo de la lista `variables_por_dimension` y comprobar cuáles variables están disponibles en la base final.
+
+```{r ejemplo-lapply}
+
+variables_disponibles
 
 ```
 
+## Integración entre el script y el documento R Markdown
+
+El archivo `02_funciones_programacion.R` concentra las estructuras de datos y funciones reutilizables del proyecto. Este documento R Markdown ejecuta ese script mediante `source("02_funciones_programacion.R")`, por lo que puede utilizar sus funciones y objetos sin duplicar el código.
+
+Esta organización permite reutilizar las funciones tanto en el informe como en análisis posteriores y en la futura aplicación Shiny.
+
+
+# Visualizaciones 
+
+## subtitulos con este formato 
+
+
+# Análisis estadístico 
+
+## subtitulos con este formato 

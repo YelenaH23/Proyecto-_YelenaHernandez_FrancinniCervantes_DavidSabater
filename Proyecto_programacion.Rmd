@@ -12,7 +12,6 @@ output:
     highlight: tango
 ---
 
-```{r setup, message=FALSE, warning=FALSE}}
 ```{r setup, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -298,6 +297,29 @@ Esta organización permite reutilizar las funciones tanto en el informe como en 
 
 
 # Visualizaciones 
+Para las vasualizaciones se creo el scrip `visualizaciones.R`, el cual contiene 6 tipos de graficos que se van a utilizar para ver como se comporta la base de datos final, algunos de estos graficos estan hechos con la libreria ploty, la cual nos ayuda a que los graficos sean interactivos y ofrecer una mejor visualizacion de estos.
+
+Nuevamente hacemos uno de la funcion `source()` para integrar los graficos a este documento
+```{r}
+source("visualizaciones.R")
+```
+
+## Grafico 1
+
+```{r echo=FALSE}
+femicidios_anio
+grafico1
+```
+*Interpretacion o explicacion de como se hizo el grafico?*
+Explicacion: Para este grafico se decidio usar la funcion `aggregate` resumir cuantos femicidios habia por año
+
+Interpretacion: Este grafico muestra la cantidad de femicidios registrados en cada año del periodo de 2022 al 2024. Este nos permite observar que el año con mayor concentracion de femicidios registrados es el 2023, mientras que el año 2024 muestra una reduccion de estos.
+
+## Grafico 2
+```{r}
+ 
+```
+
 
 ## subtitulos con este formato 
 

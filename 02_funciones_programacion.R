@@ -238,4 +238,104 @@ variables_disponibles <- verificar_variables_por_dimension(
 
 # source("02_funciones_programacion.R")
 
+  ###############################################################################################################################
 
+# Funciones de las tablas de estadistica descriptiva
+
+#"Resumen estadistico canton"
+
+resumen_estadistico_canton <- function(datos, variable) {
+  
+   cantones <- unique(datos$canton)
+  
+  resultado <- do.call(rbind, lapply(cantones, function(c) {
+    
+    datos_filtrados <- datos[datos$canton == c, ]
+   
+    valores <- datos_filtrados[[variable]]
+    
+        data.frame(
+      variable = variable,
+      canton = c,
+      minimo = min(valores, na.rm = TRUE),
+      media = mean(valores, na.rm = TRUE),
+      mediana = median(valores, na.rm = TRUE),
+      desviacion_estandar = sd(valores, na.rm = TRUE),
+      maximo = max(valores, na.rm = TRUE)
+    )
+  }))
+  
+  return(resultado)
+}
+
+
+
+#"Funcion de medidas de posicion"
+
+
+medidas_posicion_por_canton <- function(datos, variable) {
+  
+  cantones <- unique(datos$canton)
+  
+  resultado <- do.call(rbind, lapply(cantones, function(c) {
+    
+    datos_filtrados <- datos[datos$canton == c, ]
+    
+
+    valores <- datos_filtrados[[variable]]
+    
+    data.frame(
+      canton = c,
+      variable = variable,
+      Q1 = quantile(valores, 0.25, na.rm = TRUE),
+      Mediana = quantile(valores, 0.50, na.rm = TRUE),
+      Q3 = quantile(valores, 0.75, na.rm = TRUE),
+      varianza = var(valores, na.rm = TRUE),
+      desviacion_estandar = sd(valores, na.rm = TRUE)
+    )
+    
+  }))
+  
+  return(resultado)
+}
+
+
+
+#"medidas de posicion"
+
+medidas_posicion <- function(datos, variable) {
+
+valores <- datos[[variable]]
+
+data.frame(
+variable = variable, 
+Q1 = quantile(valores, 0.25, na.rm = TRUE),
+Mediana = quantile(valores, 0.50, na.rm = TRUE),
+Q3 = quantile(valores, 0.75, na.rm = TRUE),
+varianza = var(valores,na.rm = TRUE),
+desviacion_estandar = sd(valores, na.rm = TRUE))}
+
+
+
+
+
+#"funcion Resumen Estadistico" 
+resumen_estadistico <- function(datos, variable) {
+  
+  # Extrae la columna indicada usando su nombre.
+  valores <- datos[[variable]]
+
+  
+  # Crea y devuelve un data frame con las estadísticas principales.
+  data.frame(
+    variable = variable,
+
+    minimo = min(valores, na.rm = TRUE),
+    media = mean(valores, na.rm = TRUE),
+    mediana = median(valores, na.rm = TRUE),
+    desviacion_estandar = sd(valores, na.rm = TRUE),
+    maximo = max(valores, na.rm = TRUE)
+  )
+}
+
+  

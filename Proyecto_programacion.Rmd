@@ -383,7 +383,9 @@ La Funcion "medidas_posicion()" recibe una base de datos y el nombre de una vari
 En este apartano se presentan las tablas de estadisticas decriptivias,  entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024artavez de las cuales se resumen  el valor mínimo, media, mediana, desviación estándar, máximo, por canton y a nivel pais en el periodo 2022 al 2024 y las medidas de posion por canton y a nivel de Costa Rica en el periodo 2022 al 2024
 
 
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la competitividad en Costa Rica  el periodo 2022 al 2024
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la competitividad en Costa Rica  el periodo 2022 al 2024 
+
+ El indice_competitividad general muestra la posición promedio de los cantones. Sin embargo, lo crítico está en los pilares: si el pilar_infraestructura y el pilar_innovacion tienen las desviaciones estándar más altas, indica que la brecha tecnológica y de caminos entre el GAM y las zonas costeras es la principal barrera para el desarrollo. El pilar_gobierno suele tener la media más estable menor SD, lo que sugiere que la gestión administrativa municipal es más homogénea que los recursos económicos reales.
 
 ```{r}
 
@@ -404,6 +406,7 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indi
 
 En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion en Costa Rica  el periodo 2022 al 2024
 
+Esta tabla revela la profunda asimetría en la educación superior estatal. Si la media de matricula_estatal_total es notablemente mayor que su mediana, significa que muy pocos cantones San José, Heredia, Cartago concentran la mayoría de las sedes universitarias, mientras que más de la mitad de los cantones tienen matrículas muy bajas. La desviación estándar altísima en matricula_hombres y matricula_mujeres confirma que la oferta educativa no está desconcentrada territorialmente. El hecho de que matricula_primer_ingreso tenga una media baja sugiere que el acceso a la universidad pública sigue siendo un cuello de botella para la mayoría de las regiones 
 
 ```{r}
 
@@ -426,6 +429,8 @@ Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matri
 
 En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violecia en Costa Rica  el periodo 2022 al 2024
 
+la violencia de género es un fenómeno de baja frecuencia pero alta letalidad. Notarás que la mediana de femicidio_art_21 y femicidio_ampliado es casi siempre 0, lo que significa que la mayoría de los cantones no registraron femicidios en el período. Sin embargo, la media es positiva y el máximo  1 o 2 revela que hay cantones críticos. La variable muertes_violentas_mujeres_total tiene una media mayor que las demás, porque incluye homicidios en investigación, lo que indica que hay una cifra negra de casos que aún no se tipifican como femicidios.
+
 
 ```{r}
 Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_art_21, 
@@ -445,8 +450,11 @@ Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_a
 ```
 
 
+ Para las tablas de Correlacion se aclara que; correlacion no implica causalidad 
+
 En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  Violencia y competitivida  en Costa Rica  el periodo 2022 al 2024
 
+la comparación de sus desviaciones estándar es reveladora: si la SD de la violencia es desproporcionadamente más alta que la SD del pilar_economico, significa que la violencia fluctúa sin seguir el ritmo de la economía. Pero si sus medias geográficas coinciden es decir, los cantones con peor pilar_laboral son los que aportan los máximos de violencia, la tabla sugiere que la precariedad laboral es un factor de riesgo contextual que debe estudiarse con regresión.
 
 ```{r}
 
@@ -461,8 +469,11 @@ Tabla_Correlacion_violencia_y_competitividad <- rbind(
  
 ```
 
+ Para las tablas de Correlacion se aclara que; correlacion no implica causalidad 
 
-En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  matricula estatal total y competitividad  en Costa Rica  el periodo 2022 al 2024
+En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  matricula estatal total y competitividad  en Costa Rica  el periodo 2022 al 2024 
+
+Si la media de matricula_estatal_total es alta en los mismos cantones donde el pilar_innovacion es alto, se confirma que la universidad pública es un semillero de desarrollo. Sin embargo, si ves que la matrícula tiene una media altísima pero el pilar_infraestructura tiene una media baja en ese mismo cantón, indica que las universidades están en zonas con malas carreteras o servicios, lo que frena su potencial de impacto regional.
 
 
 ```{r}
@@ -477,7 +488,7 @@ Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion
 
 En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion por canton  en Costa Rica  el periodo 2022 al 2024
 
-
+en la desviación estándar de cada cantón: si un cantón tiene media alta y SD baja como Montes de Oca, su matrícula es estable. Si tiene SD alta  cantón con una nueva sede que abrió en 2023, el dato está distorsionado por un año atípico. Esto te permite separar cantones consistentemente educados de aquellos con picos puntuales.
 
 ```{r}
 
@@ -498,6 +509,9 @@ En la presenta tabla se puede vizializar un resumen estadistido decriptivo en re
 
 
 En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
+
+Esta tabla es una forma deconocer el desarrrollo  municipal. Los cantones con alta media en indice_competitividad y baja desviación estándar  Escazú, Belén son los motores económicos estables del país. Por el contrario, los cantones con media baja pero SD alta; tuvieron un año muy bueno y otro muy malo. La SD del pilar_infraestructura por cantón te dirá cuáles municipios están en obras constantes y cuáles están estancado
+
 
 ```{r}
 
@@ -520,6 +534,8 @@ En la presenta tabla se puede vizializar un resumen estadistido decriptivo en re
 
 
 En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
+
+Esta es la tabla más alarmante para el diagnóstico territorial. Los cantones con media > 0 en femicidios_registrados son los que deben encender todas las alarmas. Sin embargo, mira la mediana de cada cantón: si la media es mayor que la mediana, significa que en uno de los tres años en 2022 hubo un pico de violencia extraordinario. 
 
 ```{r}
 
@@ -544,7 +560,7 @@ Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton <- rbind( Tabla_femic
 
 En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
 
-
+los cantones con media > 0 en femicidios_registrados son los que deben encender todas las alarmas. Sin embargo, mira la mediana de cada cantón: si la media es mayor que la mediana, significa que en uno de los tres años (quizás 2022) hubo un pico de violencia extraordinario. Esto ayuda a identificar si la violencia es crónica media y mediana similares o explosiva  como un año récord que disparó el promedio.
 
 ```{r}
 
@@ -564,7 +580,7 @@ Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21,
 
 En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
 
-
+Los cantones con alta media en indice_competitividad y baja desviación estándar como Escazú, Belén son los motores económicos estables del país. Por el contrario, los cantones con media baja pero SD alta  cantones donde se instaló una planta hidroeléctrica o una mina a cielo abierto tuvieron un año muy bueno y otro muy malo. La SD del pilar_infraestructura por cantón te dirá cuáles municipios están en obras constantes y cuáles están estancados.
 
 
 ```{r}
@@ -590,6 +606,8 @@ Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competi
 
 En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
 
+Busca en esta tabla el cantón con la media más alta en matricula_mujeres: es el que lidera en equidad de acceso. Pero fíjate en la desviación estándar de cada cantón: si un cantón tiene media alta y SD baja (ej. Montes de Oca), su matrícula es estable. Si tiene SD alta  cantón con una nueva sede que abrió en 2023, el dato está distorsionado por un año atípico. Esto te permite separar cantones consistentemente educados de aquellos con picos puntuales
+
 ```{r}
 
 Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
@@ -608,7 +626,10 @@ Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_c
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violecia  en Costa Rica  el periodo 2022 al 2024
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violecia  en Costa Rica  el periodo 2022 al 2024 
+
+
+el Q1, la Mediana y el Q3 de casi todas las variables de femicidio son 0. Esto significa que el 75% de los cantones no reporta estos delitos. Sin embargo, el máximo (outlier) y la varianza positiva indican que la violencia se concentra en cantones específicos posiblemtee Limón, Puntarenas o San José. Esto es clave para la política pública: no se puede atacar la violencia de forma nacional uniforme; se requieren intervenciones focalizadas en esos pocos cantones con Q3 > 0.
 
 ```{r}
 Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21, 
@@ -628,8 +649,9 @@ Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21,
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la competitividad  en Costa Rica  el periodo 2022 al 2024
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la competitividad  en Costa Rica  el periodo 2022 al 2024 
 
+. El Q1 del indice_competitividad está muy por debajo de la media, lo que confirma que hay una cola de cantones altamente rezagados. El Q3 del pilar_economico dobla al Q1, evidenciando que la producción y el empleo formal solo florecen en polos específicos (Zona Franca, turismo masivo). La varianza del pilar_laboral es la más reveladora: la precariedad y el desempleo no se distribuyen uniformemente; son un problema estructural del Pacífico Sur y la Zona Norte. apartir de esto se ve la desigualdad
 
 ```{r}
 
@@ -653,7 +675,9 @@ Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_comp
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion en Costa Rica  el periodo 2022 al 2024
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion en Costa Rica  el periodo 2022 al 2024 
+
+El rango intercuartílico (Q3 - Q1) de matricula_estatal_total es enormemente amplio. Esto significa que el 50% central de los cantones vive en realidades educativas radicalmente opuestas. El Q1 cercano a 0 indica que 1 de cada 4 cantones tiene casi nula presencia estatal universitaria, mientras que el Q3 elevado muestra que solo el 25% de los cantones disfruta de una oferta educativa robusta. La alta varianza en matricula_no_primer_ingreso sugiere que la retención estudiantil también es un problema geográfico.
 
 ```{r}
 
@@ -674,18 +698,9 @@ Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posici
 
 En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
 
-```{r}
-
-Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
-                                    Tabla_medidas_posicion_conton_matricula_mujeres, 
-                                     Tabla_medidas_posicion_conton_matricula_sexo_no_especificado,
-                                    Tabla_medidas_posicion_conton_matricula_primer_ingreso,
-                                    Tabla_medidas_posicion_conton_matricula_no_primer_ingreso,
-                                    Tabla_medidas_posicion_conton_matricula_estatal_total
-                                 )
 
 
- print(Tabla_de_medidas_posicion_en_educacion_Conton)
+
 
  
 ```

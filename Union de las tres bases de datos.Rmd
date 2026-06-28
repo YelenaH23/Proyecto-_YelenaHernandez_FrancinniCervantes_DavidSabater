@@ -1542,93 +1542,197 @@ ggplotly(grafico6, tooltip = "text")
 ```
 
 
-
-#Análisis estadístico 
-
-En el presnete analisis estadistico, se presentan una serie de  12 Tablas atraves de la cuales, se busca establecer
-una serie de correlacion en la relación entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024, mediante la integración, visualización y exploración interactiva de datos públicos, no obstante,  se aclara que la correlacion no implica causalidad
-
-El archivo `02_funciones_programacion.R` concentra las estructuras de datos y funciones reutilizables del proyecto. Este documento R Markdown ejecuta ese script mediante `source("02_funciones_programacion.R")`, por lo que puede utilizar sus funciones y objetos sin duplicar el código.
-
-##Funciones para el analisis estadisticos 
-
-La función `resumen_estadistico_canton()` recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo, por canton.
+#analisis Estadistico
 
 ```{r}
 
-resumen_estadistico_canton(
- datos = base_final,
-  variable = "pilar_gobierno") 
+
+variables_por_dimension <- list(
+  competitividad = c( "indice_competitividad",
+                       "pilar_economico",
+                       "pilar_empresarial",
+                       "pilar_gobierno",
+                       "pilar_laboral",
+                       "pilar_infraestructura",
+                       "pilar_innovacion",
+                       "pilar_calidad_vida"
+    ),
+  violencia = c( "femicidio_art_21",
+                 "femicidio_otros_contextos",
+                 "femicidio_ampliado",
+                 "sospecha_femicidio",
+                 "femicidios_registrados",
+                 "muertes_violentas_mujeres_total"
+    ),
+  educacion = c("matricula_estatal_total",
+                "matricula_mujeres",
+                "matricula_hombres",
+                "matricula_sexo_no_especificado",
+                "porcentaje_mujeres",
+                "porcentaje_hombres",
+                "matricula_primer_ingreso",
+                "matricula_no_primer_ingreso"
+    
+  )
+)
+
+
+```
+########################################################################################################
+Funciones de analisis
+
+
+```{r}
+"funcion Resumen Estadistico"
+resumen_estadistico <- function(datos, variable) {
+  
+  # Extrae la columna indicada usando su nombre.
+  valores <- datos[[variable]]
+
+  
+  # Crea y devuelve un data frame con las estadísticas principales.
+  data.frame(
+    variable = variable,
+
+    minimo = min(valores, na.rm = TRUE),
+    media = mean(valores, na.rm = TRUE),
+    mediana = median(valores, na.rm = TRUE),
+    desviacion_estandar = sd(valores, na.rm = TRUE),
+    maximo = max(valores, na.rm = TRUE)
+  )
+}
+
+
+
+```
+
+
+```{r}
+"medidas de posicion"
+
+medidas_posicion <- function(datos, variable) {
+
+valores <- datos[[variable]]
+
+data.frame(
+variable = variable, 
+Q1 = quantile(valores, 0.25, na.rm = TRUE),
+Mediana = quantile(valores, 0.50, na.rm = TRUE),
+Q3 = quantile(valores, 0.75, na.rm = TRUE),
+varianza = var(valores,na.rm = TRUE),
+desviacion_estandar = sd(valores, na.rm = TRUE))}
+
+
+
+
+```
+
+
+```{r}
+
+"Funcion de medidas de posicion"
+
+
+medidas_posicion_por_canton <- function(datos, variable) {
+  
+  cantones <- unique(datos$canton)
+  
+  resultado <- do.call(rbind, lapply(cantones, function(c) {
+    
+    datos_filtrados <- datos[datos$canton == c, ]
+    
+    # Extraer valores
+    valores <- datos_filtrados[[variable]]
+    
+    data.frame(
+      canton = c,
+      variable = variable,
+      Q1 = quantile(valores, 0.25, na.rm = TRUE),
+      Mediana = quantile(valores, 0.50, na.rm = TRUE),
+      Q3 = quantile(valores, 0.75, na.rm = TRUE),
+      varianza = var(valores, na.rm = TRUE),
+      desviacion_estandar = sd(valores, na.rm = TRUE)
+    )
+    
+  }))
+  
+  return(resultado)
+}
+
+
+  
+    
 
  
 ```
 
-La funcion "resumen_estadisco()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo
+
 
 
 ```{r}
- 
- resumen_estadistico(datos = base_final,
-                       variable = "pilar_calidad_vida")
+"Resumen estadistico canton"
 
+resumen_estadistico_canton <- function(datos, variable) {
+  
+  # Obtener lista de cantones únicos
+  cantones <- unique(datos$canton)
+  
+  # Aplicar cálculo por cada cantón
+  resultado <- do.call(rbind, lapply(cantones, function(c) {
+    
+    datos_filtrados <- datos[datos$canton == c, ]
+    
+    # Extraer valores
+    valores <- datos_filtrados[[variable]]
+    
+    # Crear fila de resumen
+    data.frame(
+      variable = variable,
+      canton = c,
+      minimo = min(valores, na.rm = TRUE),
+      media = mean(valores, na.rm = TRUE),
+      mediana = median(valores, na.rm = TRUE),
+      desviacion_estandar = sd(valores, na.rm = TRUE),
+      maximo = max(valores, na.rm = TRUE)
+    )
+  }))
+  
+  return(resultado)
+}
 
 ```
 
+##############################################################################################
 
-La Funcion "medidas_posicion_por_canton()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor por cuartiles, varianza y desviacion estandar por canton
+Tablas descriptivas resumen
+
+
 
 ```{r}
 
- medidas_posicion_por_canton(datos = base_final,
-                       variable = "muertes_violentas_mujeres_total")
+
+          " Tabla de estadisticas desriptivas en educacion Costa Rica"
+
+Tabla_matricula_hombres <-  resumen_estadistico(datos = base_final,
+                       variable = "matricula_hombres")
+
+Tabla_matricula_mujeres <-  resumen_estadistico(datos = base_final,
+                       variable = "matricula_mujeres")
+
+
+ Tabla_matricula_sexo_no_especificado <- resumen_estadistico(  datos = base_final,
+  variable = "matricula_sexo_no_especificado") 
+
+   
+ Tabla_matricula_primer_ingreso <- resumen_estadistico( datos = base_final,
+  variable = "matricula_primer_ingreso") 
 
  
-```
+Tabla_matricula_no_primer_ingreso <-  resumen_estadistico(datos = base_final,
+                       variable = "matricula_no_primer_ingreso")
 
-
-La Funcion "medidas_posicion()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor por cuartiles, varianza y desviacion estandar
-
-```{r}
-
- medidas_posicion(datos = base_final,
+Tabla_matricula_estatal_total <-  resumen_estadistico(datos = base_final,
                        variable = "matricula_estatal_total")
-                       
- 
-```
-
-
-## Tablas de Estadisticas Descriptivas 
-
-En este apartano se presentan las tablas de estadisticas decriptivias,  entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024artavez de las cuales se resumen  el valor mínimo, media, mediana, desviación estándar, máximo, por canton y a nivel pais en el periodo 2022 al 2024 y las medidas de posion por canton y a nivel de Costa Rica en el periodo 2022 al 2024
-
-
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la competitividad en Costa Rica  el periodo 2022 al 2024 
-
- El indice_competitividad general muestra la posición promedio de los cantones. Sin embargo, lo crítico está en los pilares: si el pilar_infraestructura y el pilar_innovacion tienen las desviaciones estándar más altas, indica que la brecha tecnológica y de caminos entre el GAM y las zonas costeras es la principal barrera para el desarrollo. El pilar_gobierno suele tener la media más estable menor SD, lo que sugiere que la gestión administrativa municipal es más homogénea que los recursos económicos reales.
-
-```{r}
-
-Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indice_competitividad, 
-                                                   Resumen_pilar_economico, 
-                                                   Resumen_pilar_empresarial, 
-                                                   Resumen_pilar_gobierno,
-                                                   Resumen_pilar_laboral,
-                                                   Resumen_pilar_infraestructura,
-                                                   Resumen_pilar_innovacion,
-                                                   Resumen_pilar_calidad_vida
-                                      
-                                      )
- 
- print(Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica)
-```
-
-
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion en Costa Rica  el periodo 2022 al 2024
-
-Esta tabla revela la profunda asimetría en la educación superior estatal. Si la media de matricula_estatal_total es notablemente mayor que su mediana, significa que muy pocos cantones San José, Heredia, Cartago concentran la mayoría de las sedes universitarias, mientras que más de la mitad de los cantones tienen matrículas muy bajas. La desviación estándar altísima en matricula_hombres y matricula_mujeres confirma que la oferta educativa no está desconcentrada territorialmente. El hecho de que matricula_primer_ingreso tenga una media baja sugiere que el acceso a la universidad pública sigue siendo un cuello de botella para la mayoría de las regiones 
-
-```{r}
-
 
 
 Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matricula_hombres,
@@ -1641,17 +1745,98 @@ Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matri
 
 
  print(Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica)
-
  
+ 
+
+
 ```
 
 
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violecia en Costa Rica  el periodo 2022 al 2024
-
-la violencia de género es un fenómeno de baja frecuencia pero alta letalidad. Notarás que la mediana de femicidio_art_21 y femicidio_ampliado es casi siempre 0, lo que significa que la mayoría de los cantones no registraron femicidios en el período. Sin embargo, la media es positiva y el máximo  1 o 2 revela que hay cantones críticos. La variable muertes_violentas_mujeres_total tiene una media mayor que las demás, porque incluye homicidios en investigación, lo que indica que hay una cifra negra de casos que aún no se tipifican como femicidios.
 
 
 ```{r}
+
+          " Tabla de estadisticas desriptivas en competitividad Costa Rica"
+
+Resumen_indice_competitividad <-  resumen_estadistico(datos = base_final,
+                       variable = "indice_competitividad")
+
+Resumen_pilar_economico <-  resumen_estadistico( datos = base_final, 
+                                                 variable = "pilar_economico")
+
+
+ Resumen_pilar_empresarial <- resumen_estadistico( datos = base_final,
+                                                   variable = "pilar_empresarial") 
+
+   
+ Resumen_pilar_gobierno <- resumen_estadistico(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+Resumen_pilar_laboral <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_laboral")
+
+Resumen_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+Resumen_pilar_innovacion <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_innovacion")
+
+Resumen_pilar_calidad_vida <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_calidad_vida")
+
+
+Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indice_competitividad, 
+                                                   Resumen_pilar_economico, 
+                                                   Resumen_pilar_empresarial, 
+                                                   Resumen_pilar_gobierno,
+                                                   Resumen_pilar_laboral,
+                                                   Resumen_pilar_infraestructura,
+                                                   Resumen_pilar_innovacion,
+                                                   Resumen_pilar_calidad_vida
+                                      
+                                      )
+
+
+ print(Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica)
+ 
+
+  
+  
+```
+
+
+
+```{r}
+          " Tabla de estadisticas desriptivas en violencia Contra la mujer Costa Rica"
+
+Tabla_femicidio_art_21 <-  resumen_estadistico(datos = base_final,
+                       variable = "femicidio_art_21")
+
+Tabla_femicidio_otros_contextos <-  resumen_estadistico(datos = base_final,
+                       variable = "femicidio_otros_contextos")
+
+
+ Tabla_femicidio_ampliado <- resumen_estadistico(
+ datos = base_final,
+  variable = "femicidio_ampliado") 
+
+   
+ Tabla_sospecha_femicidio <- resumen_estadistico(
+ datos = base_final,
+  variable = "sospecha_femicidio") 
+
+ 
+Tabla_femicidios_registrados <-  resumen_estadistico(datos = base_final,
+                       variable = "femicidios_registrados")
+
+
+Tabla_muertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+
 Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_art_21, 
                                              Tabla_femicidio_otros_contextos, 
                                              Tabla_femicidio_ampliado,
@@ -1666,143 +1851,258 @@ Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_a
 
 
 
+
+
+
 ```
 
 
- Para las tablas de Correlacion se aclara que; correlacion no implica causalidad 
+#############################################################################################
+Tablas segun medidas de posion 
 
-En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  Violencia y competitivida  en Costa Rica  el periodo 2022 al 2024
 
-la comparación de sus desviaciones estándar es reveladora: si la SD de la violencia es desproporcionadamente más alta que la SD del pilar_economico, significa que la violencia fluctúa sin seguir el ritmo de la economía. Pero si sus medias geográficas coinciden es decir, los cantones con peor pilar_laboral son los que aportan los máximos de violencia, la tabla sugiere que la precariedad laboral es un factor de riesgo contextual que debe estudiarse con regresión.
 
 ```{r}
-
-Tabla_Correlacion_violencia_y_competitividad <- rbind( 
-  Correlacion_muertes_violentas_mujeres_total,  
-  Correlacion_indice_competitividad,
-  Correlacion_pilar_laboral,
-  Correlacion_pilar_infraestructura 
-  ) 
-
- print(Tabla_Correlacion_violencia_y_competitividad)
  
-```
 
- Para las tablas de Correlacion se aclara que; correlacion no implica causalidad 
+" Tabla de medidas posicion en educacion Costa Rica"
 
-En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  matricula estatal total y competitividad  en Costa Rica  el periodo 2022 al 2024 
+Tabla_medidas_posicion_matricula_hombres <-  medidas_posicion(datos = base_final,
+                       variable = "matricula_hombres")
 
-Si la media de matricula_estatal_total es alta en los mismos cantones donde el pilar_innovacion es alto, se confirma que la universidad pública es un semillero de desarrollo. Sin embargo, si ves que la matrícula tiene una media altísima pero el pilar_infraestructura tiene una media baja en ese mismo cantón, indica que las universidades están en zonas con malas carreteras o servicios, lo que frena su potencial de impacto regional.
+Tabla_medidas_posicion_matricula_mujeres <-  medidas_posicion(datos = base_final,
+                       variable = "matricula_mujeres")
 
 
-```{r}
-Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion_matricula_estatal_total,
-                                                                  Correlacion_indice_competitividad, Correlacion_pilar_laboral, Correlacion_pilar_infraestructura 
-  ) 
+ Tabla_medidas_posicion_matricula_sexo_no_especificado <- medidas_posicion(  datos = base_final,
+  variable = "matricula_sexo_no_especificado") 
 
- print(Tabla_Correlacion_matricula_estatal_total_y_competitividad)
+   
+ Tabla_medidas_posicion_matricula_primer_ingreso <- medidas_posicion( datos = base_final,
+  variable = "matricula_primer_ingreso") 
+
  
-```
+Tabla_medidas_posicion_matricula_no_primer_ingreso <-  medidas_posicion(datos = base_final,
+                       variable = "matricula_no_primer_ingreso")
+
+Tabla_medidas_posicion_matricula_estatal_total <-  medidas_posicion(datos = base_final,
+                       variable = "matricula_estatal_total")
 
 
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion por canton  en Costa Rica  el periodo 2022 al 2024
-
-en la desviación estándar de cada cantón: si un cantón tiene media alta y SD baja como Montes de Oca, su matrícula es estable. Si tiene SD alta  cantón con una nueva sede que abrió en 2023, el dato está distorsionado por un año atípico. Esto te permite separar cantones consistentemente educados de aquellos con picos puntuales.
-
-```{r}
-
- Tabla_estadisticas_Descriptivas_en_educaicon_por_canton <- rbind ( Resumen_matricula_hombres_canton,
-                                    Resumen_matricula_mujeres_canton, 
-                                     Resumen_matricula_sexo_no_especificado_canton,
-                                    Resumen_matricula_primer_ingreso_canton,
-                                    Resumen_matricula_no_primer_ingreso_canton,
-                                    Resumen_matricula_estatal_total_canton
+Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posicion_matricula_hombres,
+                                    Tabla_medidas_posicion_matricula_mujeres, 
+                                     Tabla_medidas_posicion_matricula_sexo_no_especificado,
+                                    Tabla_medidas_posicion_matricula_primer_ingreso,
+                                    Tabla_medidas_posicion_matricula_no_primer_ingreso,
+                                    Tabla_medidas_posicion_matricula_estatal_total
                                  )
 
 
- print(Tabla_estadisticas_Descriptivas_en_educaicon_por_canton)
+ print(Tabla_de_medidas_posicion_en_educacion_Costa_Rica)
 
- 
+
+
+
 ```
 
 
 
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
 
-Esta tabla es una forma deconocer el desarrrollo  municipal. Los cantones con alta media en indice_competitividad y baja desviación estándar  Escazú, Belén son los motores económicos estables del país. Por el contrario, los cantones con media baja pero SD alta; tuvieron un año muy bueno y otro muy malo. La SD del pilar_infraestructura por cantón te dirá cuáles municipios están en obras constantes y cuáles están estancado
+
 
 
 ```{r}
 
- TTabla_Estadisticas_Descriptivas_Competitividad_segun_canton <- rbind( Resumen_indice_competitividad_canton, 
-                                                   Resumen_pilar_economico_canton, 
-                                                   Resumen_pilar_empresarial_canton, 
-                                                   Resumen_pilar_gobierno_canton,
-                                                   Resumen_pilar_laboral_canton,
-                                                   Resumen_pilar_infraestructura_canton,
-                                                   Resumen_pilar_innovacion_canton,
-                                                   Resumen_pilar_calidad_vida_canton
+
+          " Tabla de medidas posicion en competitividad Costa Rica"
+
+ResumenMP_indice_competitividad <-  medidas_posicion(datos = base_final,
+                       variable = "indice_competitividad")
+
+ResumenMP_pilar_economico <-  medidas_posicion( datos = base_final, 
+                                                 variable = "pilar_economico")
+
+
+ ResumenMP_pilar_empresarial <- medidas_posicion( datos = base_final,
+                                                   variable = "pilar_empresarial") 
+
+   
+ ResumenMP_pilar_gobierno <- medidas_posicion(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+ResumenMP_pilar_laboral <-  medidas_posicion(datos = base_final,
+                       variable = "pilar_laboral")
+
+ResumenMP_pilar_infraestructura <-  medidas_posicion(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+ResumenMP_pilar_innovacion <-  medidas_posicion(datos = base_final,
+                       variable = "pilar_innovacion")
+
+ResumenMP_pilar_calidad_vida <-  medidas_posicion(datos = base_final,
+                       variable = "pilar_calidad_vida")
+
+
+Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_competitividad, 
+                                                   ResumenMP_pilar_economico, 
+                                                   ResumenMP_pilar_empresarial, 
+                                                   ResumenMP_pilar_gobierno,
+                                                   ResumenMP_pilar_laboral,
+                                                   ResumenMP_pilar_infraestructura,
+                                                   ResumenMP_pilar_innovacion,
+                                                   ResumenMP_pilar_calidad_vida
                                       
                                       )
 
 
- print(Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton)
+ print(Tabla_medidas_posicion_Competitividad_Costa_Rica)
 
- 
+
 ```
 
 
-En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
-
-Esta es la tabla más alarmante para el diagnóstico territorial. Los cantones con media > 0 en femicidios_registrados son los que deben encender todas las alarmas. Sin embargo, mira la mediana de cada cantón: si la media es mayor que la mediana, significa que en uno de los tres años en 2022 hubo un pico de violencia extraordinario. 
 
 ```{r}
+"Tabla de medidas de posicion  Violencia contra la mujer en Costa Rica"
 
-Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton <- rbind( Tabla_femicidio_art_21_canton, 
-                                             Tabla_femicidio_otros_contextos_canton, 
-                                             Tabla_femicidio_ampliado_canton,
-                                             Tabla_sospecha_femicidio_canton, 
-                                             Tabla_femicidios_registrados_canton,
-                                             Tabla_muertes_violentas_mujeres_total_canton
+
+TablaMP_femicidio_art_21 <-  medidas_posicion(datos = base_final,
+                       variable = "femicidio_art_21")
+
+TablaMP_femicidio_otros_contextos <-  medidas_posicion(datos = base_final,
+                       variable = "femicidio_otros_contextos")
+
+
+ TablaMP_femicidio_ampliado <- medidas_posicion(
+ datos = base_final,
+  variable = "femicidio_ampliado") 
+
+   
+ TablaMP_sospecha_femicidio <- medidas_posicion(
+ datos = base_final,
+  variable = "sospecha_femicidio") 
+
+ 
+TablaMP_femicidios_registrados <-  medidas_posicion(datos = base_final,
+                       variable = "femicidios_registrados")
+
+
+TablaMP_muertes_violentas_mujeres_total <-  medidas_posicion(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+
+Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21, 
+                                             TablaMP_femicidio_otros_contextos, 
+                                             TablaMP_femicidio_ampliado,
+                                             TablaMP_sospecha_femicidio, 
+                                             TablaMP_femicidios_registrados,
+                                             TablaMP_muertes_violentas_mujeres_total
                                       )
 
 
- print(Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton)
+ print(Tabla_medidas_posicion_Violencia_Costa_Rica)
 
- 
+print("hola")
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 
 
 
+######################################################################################################################
+Tablas de Medidas de Posicion segun canton 
+medidas_posicion_por_canton 
 
-
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
-
-los cantones con media > 0 en femicidios_registrados son los que deben encender todas las alarmas. Sin embargo, mira la mediana de cada cantón: si la media es mayor que la mediana, significa que en uno de los tres años (quizás 2022) hubo un pico de violencia extraordinario. Esto ayuda a identificar si la violencia es crónica media y mediana similares o explosiva  como un año récord que disparó el promedio.
 
 ```{r}
+" Tabla de medidas posicion en educacion Conton"
 
-Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21, 
-                                             TablaMPC_femicidio_otros_contextos, 
-                                             TablaMPC_femicidio_ampliado,
-                                             TablaMPC_sospecha_femicidio, 
-                                             TablaMPC_femicidios_registrados,
-                                             TablaMPC_muertes_violentas_mujeres_total
-                                      )
+Tabla_medidas_posicion_conton_matricula_hombres <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "matricula_hombres")
+
+Tabla_medidas_posicion_conton_matricula_mujeres <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "matricula_mujeres")
 
 
- print(Tabla_medidas_posicion_Violencia_Conton)
+ Tabla_medidas_posicion_conton_matricula_sexo_no_especificado <- medidas_posicion_por_canton(  datos = base_final,
+  variable = "matricula_sexo_no_especificado") 
+
+   
+ Tabla_medidas_posicion_conton_matricula_primer_ingreso <- medidas_posicion_por_canton( datos = base_final,
+  variable = "matricula_primer_ingreso") 
 
  
+Tabla_medidas_posicion_conton_matricula_no_primer_ingreso <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "matricula_no_primer_ingreso")
+
+Tabla_medidas_posicion_conton_matricula_estatal_total <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "matricula_estatal_total")
+
+
+Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
+                                    Tabla_medidas_posicion_conton_matricula_mujeres, 
+                                     Tabla_medidas_posicion_conton_matricula_sexo_no_especificado,
+                                    Tabla_medidas_posicion_conton_matricula_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_no_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_estatal_total
+                                 )
+
+
+ print(Tabla_de_medidas_posicion_en_educacion_Conton)
+
+
+
+
 ```
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
-
-Los cantones con alta media en indice_competitividad y baja desviación estándar como Escazú, Belén son los motores económicos estables del país. Por el contrario, los cantones con media baja pero SD alta  cantones donde se instaló una planta hidroeléctrica o una mina a cielo abierto tuvieron un año muy bueno y otro muy malo. La SD del pilar_infraestructura por cantón te dirá cuáles municipios están en obras constantes y cuáles están estancados.
 
 
 ```{r}
+
+  " Tabla de medidas posicion en competitividad por canton"
+
+ResumenMPC_indice_competitividad <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "indice_competitividad")
+
+ResumenMPC_pilar_economico <-  medidas_posicion_por_canton( datos = base_final, 
+                                                 variable = "pilar_economico")
+
+
+ ResumenMPC_pilar_empresarial <- medidas_posicion_por_canton( datos = base_final,
+                                                   variable = "pilar_empresarial") 
+
+   
+ ResumenMPC_pilar_gobierno <- medidas_posicion_por_canton(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+ResumenMPC_pilar_laboral <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "pilar_laboral")
+
+ResumenMPC_pilar_infraestructura <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+ResumenMPC_pilar_innovacion <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "pilar_innovacion")
+
+ResumenMPC_pilar_calidad_vida <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "pilar_calidad_vida")
 
 
 Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competitividad, 
@@ -1819,103 +2119,360 @@ Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competi
 
  print(Tabla_medidas_posicion_Competitividad_Canton)
 
- 
-```
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
-
-Busca en esta tabla el cantón con la media más alta en matricula_mujeres: es el que lidera en equidad de acceso. Pero fíjate en la desviación estándar de cada cantón: si un cantón tiene media alta y SD baja (ej. Montes de Oca), su matrícula es estable. Si tiene SD alta  cantón con una nueva sede que abrió en 2023, el dato está distorsionado por un año atípico. Esto te permite separar cantones consistentemente educados de aquellos con picos puntuales
-
-```{r}
-
-Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
-                                    Tabla_medidas_posicion_conton_matricula_mujeres, 
-                                     Tabla_medidas_posicion_conton_matricula_sexo_no_especificado,
-                                    Tabla_medidas_posicion_conton_matricula_primer_ingreso,
-                                    Tabla_medidas_posicion_conton_matricula_no_primer_ingreso,
-                                    Tabla_medidas_posicion_conton_matricula_estatal_total
-                                 )
 
 
- print(Tabla_de_medidas_posicion_en_educacion_Conton)
 
- 
 ```
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violecia  en Costa Rica  el periodo 2022 al 2024 
-
-
-el Q1, la Mediana y el Q3 de casi todas las variables de femicidio son 0. Esto significa que el 75% de los cantones no reporta estos delitos. Sin embargo, el máximo (outlier) y la varianza positiva indican que la violencia se concentra en cantones específicos posiblemtee Limón, Puntarenas o San José. Esto es clave para la política pública: no se puede atacar la violencia de forma nacional uniforme; se requieren intervenciones focalizadas en esos pocos cantones con Q3 > 0.
 
 ```{r}
-Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21, 
-                                             TablaMP_femicidio_otros_contextos, 
-                                             TablaMP_femicidio_ampliado,
-                                             TablaMP_sospecha_femicidio, 
-                                             TablaMP_femicidios_registrados,
-                                             TablaMP_muertes_violentas_mujeres_total
+
+"Tabla de medidas de posicion  Violencia contra la mujer por canton"
+
+
+TablaMPC_femicidio_art_21 <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "femicidio_art_21")
+
+TablaMPC_femicidio_otros_contextos <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "femicidio_otros_contextos")
+
+
+  TablaMPC_femicidio_ampliado <- medidas_posicion_por_canton(
+ datos = base_final,
+  variable = "femicidio_ampliado") 
+
+   
+ TablaMPC_sospecha_femicidio <- medidas_posicion_por_canton(
+ datos = base_final,
+  variable = "sospecha_femicidio") 
+
+ 
+TablaMPC_femicidios_registrados <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "femicidios_registrados")
+
+
+TablaMPC_muertes_violentas_mujeres_total <-  medidas_posicion_por_canton(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+
+Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21, 
+                                             TablaMPC_femicidio_otros_contextos, 
+                                             TablaMPC_femicidio_ampliado,
+                                             TablaMPC_sospecha_femicidio, 
+                                             TablaMPC_femicidios_registrados,
+                                             TablaMPC_muertes_violentas_mujeres_total
                                       )
 
 
- print(Tabla_medidas_posicion_Violencia_Costa_Rica)
+ print(Tabla_medidas_posicion_Violencia_Conton)
 
- 
+
 ```
 
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la competitividad  en Costa Rica  el periodo 2022 al 2024 
 
-. El Q1 del indice_competitividad está muy por debajo de la media, lo que confirma que hay una cola de cantones altamente rezagados. El Q3 del pilar_economico dobla al Q1, evidenciando que la producción y el empleo formal solo florecen en polos específicos (Zona Franca, turismo masivo). La varianza del pilar_laboral es la más reveladora: la precariedad y el desempleo no se distribuyen uniformemente; son un problema estructural del Pacífico Sur y la Zona Norte. apartir de esto se ve la desigualdad
+############################################################################################################
+Tablas de correlación 
+La correlación no implica causalidad 
+
 
 ```{r}
 
-Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_competitividad, 
-                                                   ResumenMP_pilar_economico, 
-                                                   ResumenMP_pilar_empresarial, 
-                                                   ResumenMP_pilar_gobierno,
-                                                   ResumenMP_pilar_laboral,
-                                                   ResumenMP_pilar_infraestructura,
-                                                   ResumenMP_pilar_innovacion,
-                                                   ResumenMP_pilar_calidad_vida
+
+"Correlacion en estadisticas descriptivas Violencia contra la muejer y competitividad en Costa Rica"
+
+Correlacion_mmuertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+Correlacion_indice_competitividad <-  resumen_estadistico(datos = base_final,
+                       variable = "indice_competitividad")
+
+Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_laboral")
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+   
+Tabla_Correlacion_violencia_y_competitividad <- rbind( 
+  Correlacion_muertes_violentas_mujeres_total,  
+  Correlacion_indice_competitividad,
+  Correlacion_pilar_laboral,
+  Correlacion_pilar_infraestructura 
+  ) 
+
+ print(Tabla_Correlacion_violencia_y_competitividad)
+
+
+
+
+```
+ 
+
+```{r}
+
+"Correlacion  en estadisticas descriptivas matricula estatal total y competitividad en Costa Rica"
+
+Correlacion_matricula_estatal_total <-  resumen_estadistico(datos = base_final,
+                       variable = "matricula_estatal_total")
+
+
+Correlacion_indice_competitividad <-  resumen_estadistico(datos = base_final,
+                       variable = "indice_competitividad")
+
+Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_laboral")
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+   
+Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion_matricula_estatal_total,
+                                                                  Correlacion_indice_competitividad, Correlacion_pilar_laboral, Correlacion_pilar_infraestructura 
+  ) 
+
+ print(Tabla_Correlacion_matricula_estatal_total_y_competitividad)
+
+
+```
+
+
+
+
+
+```{r}
+
+"Correlacion en estadisticas descriptivas violencia  estatal total y competitividad en Costa Rica"
+
+Correlacion_mmuertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+Correlacion_pilar_economico <-  resumen_estadistico( datos = base_final, 
+                                                 variable = "pilar_economico")
+
+
+ Correlacion_pilar_empresarial <- resumen_estadistico( datos = base_final,
+                                                   variable = "pilar_empresarial") 
+
+   
+ Correlacion_pilar_gobierno <- resumen_estadistico(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_laboral")
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+Correlacion_pilar_innovacion <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_innovacion")
+
+Correlacion_pilar_calidad_vida <-  resumen_estadistico(datos = base_final,
+                       variable = "pilar_calidad_vida")
+
+
+Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Correlacion_mmuertes_violentas_mujeres_total , 
+                                                   Correlacion_pilar_economico, 
+                                                   Correlacion_pilar_empresarial, 
+                                                   Correlacion_pilar_gobierno,
+                                                   Correlacion_pilar_laboral,
+                                                   Correlacion_pilar_infraestructura,
+                                                   Correlacion_pilar_innovacion,
+                                                   Correlacion_pilar_calidad_vida         )
+ 
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+##############################################################################################
+Tabla Estadisticas Descriptivas segun canton
+
+
+
+
+```{r, warning=FALSE}
+
+       " Tabla de estadisticas desriptivas en educacion por canton"
+Resumen_matricula_hombres_canton <-   resumen_estadistico_canton(datos = base_final,
+                       variable = "matricula_hombres")
+
+Resumen_matricula_mujeres_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "matricula_mujeres")
+
+
+ Resumen_matricula_sexo_no_especificado_canton <- resumen_estadistico_canton(
+ datos = base_final,
+  variable = "matricula_sexo_no_especificado") 
+
+   
+ Resumen_matricula_primer_ingreso_canton <- resumen_estadistico_canton(
+ datos = base_final,
+  variable = "matricula_primer_ingreso") 
+
+ 
+Resumen_matricula_no_primer_ingreso_canton <- resumen_estadistico_canton(datos = base_final,
+                       variable = "matricula_no_primer_ingreso")
+
+Resumen_matricula_estatal_total_canton <- resumen_estadistico_canton(datos = base_final,
+                       variable = "matricula_estatal_total")
+
+
+ Tabla_estadisticas_Descriptivas_en_educaicon_por_canton <- rbind ( Resumen_matricula_hombres_canton,
+                                    Resumen_matricula_mujeres_canton, 
+                                     Resumen_matricula_sexo_no_especificado_canton,
+                                    Resumen_matricula_primer_ingreso_canton,
+                                    Resumen_matricula_no_primer_ingreso_canton,
+                                    Resumen_matricula_estatal_total_canton
+                                 )
+
+
+ print(Tabla_estadisticas_Descriptivas_en_educaicon_por_canton)
+
+
+
+
+```
+
+
+
+```{r}
+
+
+
+"Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton"
+
+Resumen_indice_competitividad_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "indice_competitividad")
+
+Resumen_pilar_economico_canton <-  resumen_estadistico_canton( datos = base_final, 
+                                                 variable = "pilar_economico")
+
+
+ Resumen_pilar_empresarial_canton <- resumen_estadistico_canton( datos = base_final,
+                                                   variable = "pilar_empresarial") 
+
+   
+ Resumen_pilar_gobierno_canton <- resumen_estadistico_canton(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+Resumen_pilar_laboral_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "pilar_laboral")
+
+Resumen_pilar_infraestructura_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "pilar_infraestructura")
+
+Resumen_pilar_innovacion_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "pilar_innovacion")
+
+Resumen_pilar_calidad_vida_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "pilar_calidad_vida")
+
+
+Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton <- rbind( Resumen_indice_competitividad_canton, 
+                                                   Resumen_pilar_economico_canton, 
+                                                   Resumen_pilar_empresarial_canton, 
+                                                   Resumen_pilar_gobierno_canton,
+                                                   Resumen_pilar_laboral_canton,
+                                                   Resumen_pilar_infraestructura_canton,
+                                                   Resumen_pilar_innovacion_canton,
+                                                   Resumen_pilar_calidad_vida_canton
                                       
                                       )
 
 
- print(Tabla_medidas_posicion_Competitividad_Costa_Rica)
+ print(Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton)
 
- 
+
 ```
 
 
 
 
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion en Costa Rica  el periodo 2022 al 2024 
 
-El rango intercuartílico (Q3 - Q1) de matricula_estatal_total es enormemente amplio. Esto significa que el 50% central de los cantones vive en realidades educativas radicalmente opuestas. El Q1 cercano a 0 indica que 1 de cada 4 cantones tiene casi nula presencia estatal universitaria, mientras que el Q3 elevado muestra que solo el 25% de los cantones disfruta de una oferta educativa robusta. La alta varianza en matricula_no_primer_ingreso sugiere que la retención estudiantil también es un problema geográfico.
+
+
+
 
 ```{r}
 
-Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posicion_matricula_hombres,
-                                    Tabla_medidas_posicion_matricula_mujeres, 
-                                     Tabla_medidas_posicion_matricula_sexo_no_especificado,
-                                    Tabla_medidas_posicion_matricula_primer_ingreso,
-                                    Tabla_medidas_posicion_matricula_no_primer_ingreso,
-                                    Tabla_medidas_posicion_matricula_estatal_total
-                                 )
+"Tabla estadistica resumen violencia contra la mujer por _canton"
 
 
- print(Tabla_de_medidas_posicion_en_educacion_Costa_Rica)
+Tabla_femicidio_art_21_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "femicidio_art_21")
+
+Tabla_femicidio_otros_contextos_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "femicidio_otros_contextos")
+
+
+  Tabla_femicidio_ampliado_canton <- resumen_estadistico_canton(
+ datos = base_final,
+  variable = "femicidio_ampliado") 
+
+   
+ Tabla_sospecha_femicidio_canton <- resumen_estadistico_canton(
+ datos = base_final,
+  variable = "sospecha_femicidio") 
 
  
+Tabla_femicidios_registrados_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "femicidios_registrados")
+
+
+Tabla_muertes_violentas_mujeres_total_canton <-  resumen_estadistico_canton(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+
+
+Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton <- rbind( Tabla_femicidio_art_21_canton, 
+                                             Tabla_femicidio_otros_contextos_canton, 
+                                             Tabla_femicidio_ampliado_canton,
+                                             Tabla_sospecha_femicidio_canton, 
+                                             Tabla_femicidios_registrados_canton,
+                                             Tabla_muertes_violentas_mujeres_total_canton
+                                      )
+
+
+ print(Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton)
+
+
+
 ```
-
-
-En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
 
 
 

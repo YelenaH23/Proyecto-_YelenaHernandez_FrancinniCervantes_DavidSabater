@@ -320,7 +320,6 @@ desviacion_estandar = sd(valores, na.rm = TRUE))}
 
 
 #"funcion Resumen Estadistico" 
-
 resumen_estadistico <- function(datos, variable) {
   
   # Extrae la columna indicada usando su nombre.

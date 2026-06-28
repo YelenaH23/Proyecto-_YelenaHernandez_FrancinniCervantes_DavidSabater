@@ -326,15 +326,213 @@ Interpretacion: Este grafico muestra la cantidad de femicidios registrados en ca
 
 # Análisis estadístico 
 
-En el presnete analisis estadistico, se presentan una serie de  #### Tablas atraves de la cuales, se busca establecer
-una serie de correlacion en la relación entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024, mediante la integración, visualización y exploración interactiva de datos públicos
-no obstante,  se aclara que la correlacion no implica causalidad
+En el presnete analisis estadistico, se presentan una serie de  12 Tablas atraves de la cuales, se busca establecer
+una serie de correlacion en la relación entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024, mediante la integración, visualización y exploración interactiva de datos públicos, no obstante,  se aclara que la correlacion no implica causalidad
 
+El archivo `02_funciones_programacion.R` concentra las estructuras de datos y funciones reutilizables del proyecto. Este documento R Markdown ejecuta ese script mediante `source("02_funciones_programacion.R")`, por lo que puede utilizar sus funciones y objetos sin duplicar el código.
+
+## Funciones para el analisis estadisticos 
+
+La función `resumen_estadistico_canton()` recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo, por canton.
+
+```{r}
+
+resumen_estadistico_canton(
+ datos = base_final,
+  variable = "pilar_gobierno") 
+
+ 
+```
+
+La funcion "resumen_estadisco()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo
+
+
+```{r}
+ 
+ resumen_estadistico(datos = base_final,
+                       variable = "pilar_calidad_vida")
+
+
+```
+
+
+La Funcion "medidas_posicion_por_canton()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor por cuartiles, varianza y desviacion estandar por canton
+
+```{r}
+
+ medidas_posicion_por_canton(datos = base_final,
+                       variable = "muertes_violentas_mujeres_total")
+
+ 
+```
+
+
+La Funcion "medidas_posicion()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor por cuartiles, varianza y desviacion estandar
+
+```{r}
+
+ medidas_posicion(datos = base_final,
+                       variable = "matricula_estatal_total")
+                       
+ 
+```
+
+
+## Tablas de Estadisticas Descriptivas 
+
+En este apartano se presentan las tablas de estadisticas decriptivias,  entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024artavez de las cuales se resumen  el valor mínimo, media, mediana, desviación estándar, máximo, por canton y a nivel pais en el periodo 2022 al 2024 y las medidas de posion por canton y a nivel de Costa Rica en el periodo 2022 al 2024
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la competitividad en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indice_competitividad, 
+                                                   Resumen_pilar_economico, 
+                                                   Resumen_pilar_empresarial, 
+                                                   Resumen_pilar_gobierno,
+                                                   Resumen_pilar_laboral,
+                                                   Resumen_pilar_infraestructura,
+                                                   Resumen_pilar_innovacion,
+                                                   Resumen_pilar_calidad_vida
+                                      
+                                      )
+ 
+ print(Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica)
+```
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion en Costa Rica  el periodo 2022 al 2024
 
 
 ```{r}
 
 
+
+Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matricula_hombres,
+                                    Tabla_matricula_mujeres, 
+                                     Tabla_matricula_sexo_no_especificado,
+                                    Tabla_matricula_primer_ingreso,
+                                    Tabla_matricula_no_primer_ingreso,
+                                    Tabla_matricula_estatal_total
+                                 )
+
+
+ print(Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica)
+
+ 
+```
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violecia en Costa Rica  el periodo 2022 al 2024
+
+
+```{r}
+Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_art_21, 
+                                             Tabla_femicidio_otros_contextos, 
+                                             Tabla_femicidio_ampliado,
+                                             Tabla_sospecha_femicidio, 
+                                             Tabla_femicidios_registrados,
+                                             Tabla_muertes_violentas_mujeres_total
+                                      
+                                      )
+
+
+ print(Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica)
+
+
+
+```
+
+
+En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  Violencia y competitivida  en Costa Rica  el periodo 2022 al 2024
+
+
+```{r}
+
+Tabla_Correlacion_violencia_y_competitividad <- rbind( 
+  Correlacion_muertes_violentas_mujeres_total,  
+  Correlacion_indice_competitividad,
+  Correlacion_pilar_laboral,
+  Correlacion_pilar_infraestructura 
+  ) 
+
+ print(Tabla_Correlacion_violencia_y_competitividad)
+ 
+```
+
+
+En la presenta tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  matricula estatal total y competitividad  en Costa Rica  el periodo 2022 al 2024
+
+
+```{r}
+Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion_matricula_estatal_total,
+                                                                  Correlacion_indice_competitividad, Correlacion_pilar_laboral, Correlacion_pilar_infraestructura 
+  ) 
+
+ print(Tabla_Correlacion_matricula_estatal_total_y_competitividad)
+ 
+```
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la edicacion por canton  en Costa Rica  el periodo 2022 al 2024
+
+
+
+```{r}
+
+ Tabla_estadisticas_Descriptivas_en_educaicon_por_canton <- rbind ( Resumen_matricula_hombres_canton,
+                                    Resumen_matricula_mujeres_canton, 
+                                     Resumen_matricula_sexo_no_especificado_canton,
+                                    Resumen_matricula_primer_ingreso_canton,
+                                    Resumen_matricula_no_primer_ingreso_canton,
+                                    Resumen_matricula_estatal_total_canton
+                                 )
+
+
+ print(Tabla_estadisticas_Descriptivas_en_educaicon_por_canton)
+
+ 
+```
+
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+ TTabla_Estadisticas_Descriptivas_Competitividad_segun_canton <- rbind( Resumen_indice_competitividad_canton, 
+                                                   Resumen_pilar_economico_canton, 
+                                                   Resumen_pilar_empresarial_canton, 
+                                                   Resumen_pilar_gobierno_canton,
+                                                   Resumen_pilar_laboral_canton,
+                                                   Resumen_pilar_infraestructura_canton,
+                                                   Resumen_pilar_innovacion_canton,
+                                                   Resumen_pilar_calidad_vida_canton
+                                      
+                                      )
+
+
+ print(Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton)
+
+ 
+```
+
+
+En la presenta tabla se puede vizializar un resumen estadistido decriptivo en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton <- rbind( Tabla_femicidio_art_21_canton, 
+                                             Tabla_femicidio_otros_contextos_canton, 
+                                             Tabla_femicidio_ampliado_canton,
+                                             Tabla_sospecha_femicidio_canton, 
+                                             Tabla_femicidios_registrados_canton,
+                                             Tabla_muertes_violentas_mujeres_total_canton
+                                      )
+
+
+ print(Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton)
 
  
 ```
@@ -342,13 +540,153 @@ no obstante,  se aclara que la correlacion no implica causalidad
 
 
 
+
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024
+
+
+
 ```{r}
+
+Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21, 
+                                             TablaMPC_femicidio_otros_contextos, 
+                                             TablaMPC_femicidio_ampliado,
+                                             TablaMPC_sospecha_femicidio, 
+                                             TablaMPC_femicidios_registrados,
+                                             TablaMPC_muertes_violentas_mujeres_total
+                                      )
+
+
+ print(Tabla_medidas_posicion_Violencia_Conton)
+
+ 
+```
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
+
+
+
+
+```{r}
+
+
+Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competitividad, 
+                                                   ResumenMPC_pilar_economico, 
+                                                   ResumenMPC_pilar_empresarial, 
+                                                   ResumenMPC_pilar_gobierno,
+                                                   ResumenMPC_pilar_laboral,
+                                                   ResumenMPC_pilar_infraestructura,
+                                                   ResumenMPC_pilar_innovacion,
+                                                   ResumenMPC_pilar_calidad_vida
+                                      
+                                      )
+
+
+ print(Tabla_medidas_posicion_Competitividad_Canton)
+
+ 
+```
+
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
+                                    Tabla_medidas_posicion_conton_matricula_mujeres, 
+                                     Tabla_medidas_posicion_conton_matricula_sexo_no_especificado,
+                                    Tabla_medidas_posicion_conton_matricula_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_no_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_estatal_total
+                                 )
+
+
+ print(Tabla_de_medidas_posicion_en_educacion_Conton)
+
  
 ```
 
 
 
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la Violecia  en Costa Rica  el periodo 2022 al 2024
+
 ```{r}
+Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21, 
+                                             TablaMP_femicidio_otros_contextos, 
+                                             TablaMP_femicidio_ampliado,
+                                             TablaMP_sospecha_femicidio, 
+                                             TablaMP_femicidios_registrados,
+                                             TablaMP_muertes_violentas_mujeres_total
+                                      )
+
+
+ print(Tabla_medidas_posicion_Violencia_Costa_Rica)
+
+ 
+```
+
+
+
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la competitividad  en Costa Rica  el periodo 2022 al 2024
+
+
+```{r}
+
+Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_competitividad, 
+                                                   ResumenMP_pilar_economico, 
+                                                   ResumenMP_pilar_empresarial, 
+                                                   ResumenMP_pilar_gobierno,
+                                                   ResumenMP_pilar_laboral,
+                                                   ResumenMP_pilar_infraestructura,
+                                                   ResumenMP_pilar_innovacion,
+                                                   ResumenMP_pilar_calidad_vida
+                                      
+                                      )
+
+
+ print(Tabla_medidas_posicion_Competitividad_Costa_Rica)
+
+ 
+```
+
+
+
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posicion_matricula_hombres,
+                                    Tabla_medidas_posicion_matricula_mujeres, 
+                                     Tabla_medidas_posicion_matricula_sexo_no_especificado,
+                                    Tabla_medidas_posicion_matricula_primer_ingreso,
+                                    Tabla_medidas_posicion_matricula_no_primer_ingreso,
+                                    Tabla_medidas_posicion_matricula_estatal_total
+                                 )
+
+
+ print(Tabla_de_medidas_posicion_en_educacion_Costa_Rica)
+
+ 
+```
+
+
+En la presenta tabla se puede vizializar las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024
+
+```{r}
+
+Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_conton_matricula_hombres,
+                                    Tabla_medidas_posicion_conton_matricula_mujeres, 
+                                     Tabla_medidas_posicion_conton_matricula_sexo_no_especificado,
+                                    Tabla_medidas_posicion_conton_matricula_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_no_primer_ingreso,
+                                    Tabla_medidas_posicion_conton_matricula_estatal_total
+                                 )
+
+
+ print(Tabla_de_medidas_posicion_en_educacion_Conton)
+
  
 ```
 

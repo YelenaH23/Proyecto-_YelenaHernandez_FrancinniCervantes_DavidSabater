@@ -749,7 +749,7 @@ Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion
 
 ```{r}
 
-"Correlacion en estadisticas descriptivas estatal total y competitividad en Costa Rica"
+"Correlacion en estadisticas descriptivas violencia  estatal total y competitividad en Costa Rica"
 
 Correlacion_mmuertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
                        variable = "muertes_violentas_mujeres_total")

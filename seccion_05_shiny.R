@@ -67,7 +67,22 @@ ui <- fluidPage(
     
     # aqui parte de chiquillos
     mainPanel(
-      h3("Resultados del análisis")
+      h3("Resultados del análisis"),
+      tabsetPanel( # Visualizaciones
+        tabPanel(
+          "Femicidios por año",
+          plotOutput("grafico1")),
+        tabPanel( "ICC Y femicidios",
+                  plotlyOutput("grafico2")),
+        tabPanel( "Top Cantones", 
+                  plotOutput("grafico3")),
+        tabPanel( "Matricula femenina",
+                  plotlyOutput("grafico4")),
+        tabPanel("Matricula femenina",
+                 plotOutput("grafico5")),
+        tabPanel("Evolucion matricula",
+                 plotlyOutput("grafico6"))
+      )
     )
   )
 )
@@ -99,7 +114,103 @@ server <- function(input, output, session) {
     datos
   })
   
-  # aqui los chiquillos agregan renderPlot(), renderTable() etc
+  output$grafico1 <- renderPlot({
+    femicidios_anio <- datos_filtrados() %>% 
+      group_by(anio) %>% 
+      summarise( femicidios_registrados = sum(femicidios_registrados, na.rm = TRUE),
+                 .groups = "drop")
+    ggplot(femicidios_anio, aes(x = factor(anio), y = femicidios_registrados)) +
+      geom_col(fill = "darkseagreen") + 
+      geom_text(aes(label = femicidios_registrados), vjust = -0.4) +
+      labs( title = "Femicidios por año", 
+            x = "Año", y = "Cantidad de femicidios") +
+      theme_minimal()
+  })
+  output$grafico2 <- renderPlotly({
+    datos <- datos_filtrados() %>% 
+      mutate( texto = paste(
+        "Cantón:", base_final$canton,
+        "<br>Año:", base_final$anio,
+        "<br>ICC:", round(base_final$indice_competitividad, 2),
+        "<br>Categoría ICC:", base_final$categoria_competitividad,
+        "<br>Femicidios registrados:", base_final$femicidios_registrados
+      ))
+    grafico2 <- ggplot( datos,
+                        aes( x = indice_competitividad, y = femicidios_registrados,
+                             color = categoria_competitividad,
+                             text = texto)) +
+      geom_point(size = 3, alpha = 0.8) +
+      labs(
+        title = "Relación entre competitividad cantonal y femicidios",
+        x = "Índice de Competitividad Cantonal",
+        y = "Femicidios registrados",
+        color = "Categoría ICC"
+      ) +
+      theme_minimal()
+    ggplotly(grafico2, tooltip = "text")
+  })
+  output$grafico3 <- renderPlot({
+    top15 <- datos_filtrados() %>% 
+      group_by(canton_original) %>% 
+      summarise( femicidios_registrados = sum(femicidios_registrados, na.rm = TRUE),
+                 .groups = "drop") %>% 
+      arrange(desc(femicidios_registrados)) %>% 
+      slice_head(n = 15) %>% 
+      mutate(canton_original = factor(canton_original, levels = rev(canton_original)))
+    ggplot(top15, aes(x = canton_original, y = femicidios_registrados)) +
+      geom_col(fill = "darkslategray3") +
+      coord_flip() +
+      geom_text(aes(label = femicidios_registrados), hjust = -0.8) +
+      labs( title = "Top 15 cantones con más femicidios registrados",
+            x = "Cantón", y = "Femicidios acumulados") +
+      theme_minimal()
+  })
+  output$grafico4 <- renderPlotly({
+    grafico4 <- ggplot(datos_filtrados(), 
+                       aes(x = categoria_competitividad, y = porcentaje_mujeres, 
+                           fill = categoria_competitividad, 
+                           text = paste( "Categoría ICC:", categoria_competitividad, 
+                                         "<br>Porcentaje mujeres:", round(porcentaje_mujeres, 1), "%"))) + 
+      geom_boxplot(alpha = 0.8) + 
+      labs( title = "Porcentaje de matricula femenina segun categoria ICC",
+            x = "Categoria de competitividad", y = "Porcentaje mujeres matriculadas") 
+    ggplotly(grafico4, tooltip = "text")
+  })
+  output$grafico5 <- renderPlot({
+    comparacion_larga <- base_final %>% 
+      group_by(categoria_competitividad) %>% 
+      summarise(
+        `Matrícula femenina (%)` = mean(porcentaje_mujeres, na.rm = TRUE),
+        `Femicidios promedio` = mean(femicidios_registrados, na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      pivot_longer(cols = c(`Matrícula femenina (%)`,`Femicidios promedio`),
+                   names_to = "variable", values_to = "valor")
+    
+    ggplot(comparacion_larga, aes(x = categoria_competitividad, y = valor, fill = categoria_competitividad)) +
+      geom_col(width = 0.7, show.legend = FALSE) +
+      geom_text(aes(label = round(valor, 1)),
+                vjust = -0.2, size = 3.5) +
+      labs(
+        title = "Matrícula femenina y femicidios por categoría ICC",
+        x = "Categoría ICC",
+        y = "Valor",
+        fill = "Variable"
+      ) +
+      theme_minimal()
+  })
+  output$grafico6 <- renderPlotly({
+    matricula_anio_cat <- aggregate(porcentaje_mujeres ~ anio + categoria_competitividad, data = base_final, FUN = mean)
+    
+    grafico6 <- ggplot(matricula_anio_cat, aes(x = anio, y = porcentaje_mujeres, color = categoria_competitividad, group = categoria_competitividad, text = paste("Año:", anio, "<br>Categoría ICC:", categoria_competitividad, "<br>Porcentaje mujeres:", round(porcentaje_mujeres, 1), "%"))) +  
+      geom_line(size = 1.2) +
+      geom_point(size = 3) +
+      labs( title = "Evolución del porcentaje de matrícula femenina",
+            x = "Año", y = "Porcentaje de mujeres matriculadas", color = "Categoría ICC") +
+      theme_minimal()
+    
+    ggplotly(grafico6, tooltip = "text")
+  })
 }
 
 

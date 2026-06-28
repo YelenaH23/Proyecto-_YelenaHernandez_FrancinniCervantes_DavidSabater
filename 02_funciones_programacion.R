@@ -239,9 +239,10 @@ variables_disponibles <- verificar_variables_por_dimension(
 # source("02_funciones_programacion.R")
 
 ###############################################################################################################################
-Hacer mas Organizado 
 
-"Resumen estadistico canton"
+# Funciones de las tablas de estadistica descriptiva
+
+#"Resumen estadistico canton"
 
 resumen_estadistico_canton <- function(datos, variable) {
   
@@ -269,7 +270,7 @@ resumen_estadistico_canton <- function(datos, variable) {
 
 
 
-"Funcion de medidas de posicion"
+#"Funcion de medidas de posicion"
 
 
 medidas_posicion_por_canton <- function(datos, variable) {
@@ -300,7 +301,7 @@ medidas_posicion_por_canton <- function(datos, variable) {
 
 
 
-"medidas de posicion"
+#"medidas de posicion"
 
 medidas_posicion <- function(datos, variable) {
 
@@ -318,7 +319,8 @@ desviacion_estandar = sd(valores, na.rm = TRUE))}
 
 
 
-"funcion Resumen Estadistico"
+#"funcion Resumen Estadistico" 
+
 resumen_estadistico <- function(datos, variable) {
   
   # Extrae la columna indicada usando su nombre.

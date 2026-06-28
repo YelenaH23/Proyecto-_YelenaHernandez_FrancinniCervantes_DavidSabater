@@ -24,7 +24,8 @@ library(openxlsx)
 
 ```{r}
    
-base_final <- read.csv("Bases/base_final_icc_femicidios_matricula_2022_2024 (2).csv")
+base_final <- read.csv("Bases/base_final_icc_femicidios_matricula_2022_2024.csv")
+
 
 
 
@@ -494,6 +495,15 @@ Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21,
 
 
  print(Tabla_medidas_posicion_Violencia_Costa_Rica)
+
+print("hola")
+
+
+
+
+
+
+
 
 
 

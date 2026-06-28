@@ -178,7 +178,7 @@ etiquetas_variables <- crear_etiquetas_variables(  # crea etiquetas para las var
 
 #etiquetas_variables
 
-# Ejemplo
+# Ejemplo. 
 
 #etiquetas_variables["femicidios_registrados"]
 

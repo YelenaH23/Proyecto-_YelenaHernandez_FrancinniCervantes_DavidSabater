@@ -100,9 +100,9 @@ También se construyó una categoría uniforme de competitividad a partir del í
 
 Los registros de homicidios dolosos se filtraron para conservar únicamente los años 2022, 2023 y 2024. Posteriormente, se identificaron las categorías relacionadas con femicidio y muertes violentas de mujeres.
 
-La información se resumió por año y cantón para obtener variables como femicidio artículo 21, femicidio en otros contextos, femicidio ampliado, sospecha de femicidio, homicidios de mujeres no clasificados como femicidio y total de muertes violentas de mujeres.
+La información se resumió por año y cantón para obtener variables como femicidio artículo 21 Ley de Penalización de la Violencia Contra las Mujeres Nº 8589, femicidio en otros contextos, femicidio ampliado, sospecha de femicidio, homicidios de mujeres no clasificados como femicidio y total de muertes violentas de mujeres.
 
-La variable `femicidios_registrados` corresponde a la suma de femicidios del artículo 21 y femicidios en otros contextos.
+La variable `femicidios_registrados` corresponde a la suma de femicidios segun lo tipidicado en el artículo 21 de la Ley de Penalización de la Violencia Contra las Mujeres Nº 8589
 
 ## Procesamiento de matrícula universitaria estatal
 

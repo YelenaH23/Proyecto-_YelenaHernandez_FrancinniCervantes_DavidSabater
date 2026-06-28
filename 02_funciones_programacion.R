@@ -8,11 +8,9 @@ library(stringr)
 
 # Importamos la base final unificada
 
-
 base_final <- read.csv(
   "base_final_icc_femicidios_matricula_2022_2024.csv",
-  fileEncoding = "UTF-8"
-)
+  fileEncoding = "UTF-8")
 
 
 # Hacemos revision inicial de la base (mejor confirmar)
@@ -141,9 +139,9 @@ verificar_variable <- function(datos, variable) {
 
 # Ejemplo de prueba
 
-#verificar_variable(
-#  datos = base_final,
-#  variable = "indice_competitividad")
+verificar_variable(
+  datos = base_final,
+  variable = "indice_competitividad")
 
 #verificar_variable(
 #  datos = base_final,

@@ -342,7 +342,7 @@ ggplotly(grafico4, tooltip = "text")
 ```{r echo=FALSE}
 grafico5
 ```
-*Explicacion:* Se calcula el promedio del porcentaje de mujeres matriculadas para cada categoría de competitividad cantonal y el promedio de femicidios registrados para cada categoría de competitividad cantonal, luego se unen las dos tablas anteriores usando la variable categoria_competitividad y posteriormente se transforma la tabla a un formato largo con `rbind` (se multiplica el promedio de femicidios por 10 porque los femicidios suelen tener valores pequeños, pues por dicha hay mas mujeres matriculadas que femicidios).
+*Explicacion:* Para este grafico primero se realizo una tabla resumida en formato largo para poder hacer graficos de barras agrupadas
 
 *Interpretacion:* Se compara por categoria de competitividad, el promedio de matricula femenina y el promedio de femicidios registrados. Se puede ver que los cantones con competitividad baja presentan mayor porcentaje promedio de matricula femenina.
 

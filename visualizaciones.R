@@ -119,26 +119,22 @@ ggplotly(grafico4, tooltip = "text")
 
 #Gráfico 5: 
 # ```{r echo=FALSE}
-#Se calcula el promedio del porcentaje de mujeres matriculadas para cada categoría de competitividad cantonal.
-matricula_cat <- aggregate(porcentaje_mujeres ~ categoria_competitividad, data = base_final, FUN = mean)
-
-#Se calcula el promedio de femicidios registrados para cada categoría de competitividad cantonal
-femicidios_cat <- aggregate(femicidios_registrados ~ categoria_competitividad, data = base_final, FUN = mean)
-
-#Se unen las dos tablas anteriores usando la variable categoria_competitividad
-comparacion_cat <- merge(matricula_cat, femicidios_cat, by = "categoria_competitividad")
-
-#Se transforma la tabla a un formato largo
-comparacion_larga <- rbind( data.frame(categoria = comparacion_cat$categoria_competitividad, variable = "Matricula Femenina (%)", valor = comparacion_cat$porcentaje_mujeres),
-                            data.frame(categoria = comparacion_cat$categoria_competitividad, variable = "Femicidios promedio x10", valor = comparacion_cat$femicidios_registrados))
-#Nota: Se multiplica el promedio de femicidios por 10 porque los femicidios suelen tener valores pequeños, mientras que la matrícula está en porcentaje
-
+# Hago primero una tabla resumida en formato largo para poder hacer graficos de 
+#barras agrupadas
+comparacion_larga <- base_final %>% 
+  group_by(categoria_competitividad) %>% 
+  summarise(
+    `Matrícula femenina (%)` = mean(porcentaje_mujeres, na.rm = TRUE),
+    `Femicidios promedio` = mean(femicidios_registrados, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+ pivot_longer(cols = c(`Matrícula femenina (%)`,`Femicidios promedio`),
+               names_to = "variable", values_to = "valor")
 #Construccion del grafico
-grafico5 <- ggplot(comparacion_larga, aes(x = categoria, y = valor, fill = variable)) +
-  geom_col(position = "dodge") +
+grafico5 <- ggplot(comparacion_larga, aes(x = categoria_competitividad, y = valor, fill = categoria_competitividad)) +
+  geom_col(width = 0.7, show.legend = FALSE) +
   geom_text(aes(label = round(valor, 1)),
-            position = position_dodge(width = 0.9),
-            vjust = -0.2) +
+            vjust = -0.2, size = 3.5) +
   labs(
     title = "Matrícula femenina y femicidios por categoría ICC",
     x = "Categoría ICC",

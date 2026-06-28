@@ -326,4 +326,33 @@ Interpretacion: Este grafico muestra la cantidad de femicidios registrados en ca
 
 # Análisis estadístico 
 
+En el presnete analisis estadistico, se presentan una serie de  #### Tablas atraves de la cuales, se busca establecer
+una serie de correlacion en la relación entre competitividad cantonal, femicidios registrados y matrícula universitaria estatal en Costa Rica durante el período 2022-2024, mediante la integración, visualización y exploración interactiva de datos públicos
+no obstante,  se aclara que la correlacion no implica causalidad
+
+
+
+```{r}
+
+
+
+ 
+```
+
+
+
+
+```{r}
+ 
+```
+
+
+
+```{r}
+ 
+```
+
+
+
+
 ## subtitulos con este formato 

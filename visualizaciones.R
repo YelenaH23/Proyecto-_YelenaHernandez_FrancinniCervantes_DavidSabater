@@ -11,6 +11,7 @@ library(magrittr)
 library(ggplot2)
 library(tidyverse)
 library(readxl)
+library(readr)
 library(openxlsx)
 library(plotly)
 
@@ -18,9 +19,8 @@ library(plotly)
 
 
 #```{r}
-base_final <- read_csv("base_final_icc_femicidios_matricula_2022_2024.csv")
-View(base_final_icc_femicidios_matricula_2022_2024)
-
+base_final <- read_csv("base_final.csv")
+View(base_final)
 names(base_final)
 #```
 
@@ -32,7 +32,7 @@ names(base_final)
 #  ```{r echo=FALSE}
 femicidios_anio <- aggregate(femicidios_registrados ~ anio, data = base_final, FUN = sum)
 
-ggplot(femicidios_anio, aes(x = factor(anio), y = femicidios_registrados)) +
+grafico1 <- ggplot(femicidios_anio, aes(x = factor(anio), y = femicidios_registrados)) +
   geom_col(fill = "darkseagreen") + 
   geom_text(aes(label = femicidios_registrados), vjust = -0.4) +
   labs( title = "Femicidios por año", 
@@ -56,7 +56,7 @@ base_final$texto <- paste(
 # En el eje x se coloca el Índice de Competitividad Cantonal.
 # En el eje y se coloca la cantidad de femicidios registrados.
 # El color de cada punto depende de la categoría de competitividad.
-grafico_icc_femicidios <- ggplot( base_final,
+grafico2 <- ggplot( base_final,
                                   aes( x = indice_competitividad, y = femicidios_registrados,
                                        color = categoria_competitividad,
                                        text = texto)) +
@@ -72,7 +72,7 @@ grafico_icc_femicidios <- ggplot( base_final,
 # Se convierte el gráfico de ggplot en un gráfico interactivo.
 # tooltip = "text" indica que se debe mostrar el texto personalizado
 # cuando se pasa el cursor sobre cada punto.
-ggplotly(grafico_icc_femicidios, tooltip = "text")
+ggplotly(grafico2, tooltip = "text")
 
 #```
 
@@ -95,7 +95,7 @@ top15$canton <- factor(top15$canton, levels = rev(top15$canton))
 
 
 #Construccion del grafico
-ggplot(top15, aes(x = canton, y = femicidios_registrados)) +
+grafico3 <- ggplot(top15, aes(x = canton, y = femicidios_registrados)) +
   geom_col(fill = "darkslategray3") +
   coord_flip() +
   geom_text(aes(label = femicidios_registrados), hjust = -0.8) +
@@ -134,7 +134,7 @@ comparacion_larga <- rbind( data.frame(categoria = comparacion_cat$categoria_com
 #Nota: Se multiplica el promedio de femicidios por 10 porque los femicidios suelen tener valores pequeños, mientras que la matrícula está en porcentaje
 
 #Construccion del grafico
-ggplot(comparacion_larga, aes(x = categoria, y = valor, fill = variable)) +
+grafico5 <- ggplot(comparacion_larga, aes(x = categoria, y = valor, fill = variable)) +
   geom_col(position = "dodge") +
   geom_text(aes(label = round(valor, 1)),
             position = position_dodge(width = 0.9),

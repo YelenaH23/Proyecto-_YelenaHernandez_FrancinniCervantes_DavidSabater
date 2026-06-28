@@ -307,21 +307,52 @@ source("visualizaciones.R")
 ## Grafico 1
 
 ```{r echo=FALSE}
-femicidios_anio
 grafico1
 ```
-*Interpretacion o explicacion de como se hizo el grafico?*
-Explicacion: Para este grafico se decidio usar la funcion `aggregate` resumir cuantos femicidios habia por año
+*Explicacion:* Para este grafico se decidio usar la funcion `aggregate` resumir cuantos femicidios habia por año
 
-Interpretacion: Este grafico muestra la cantidad de femicidios registrados en cada año del periodo de 2022 al 2024. Este nos permite observar que el año con mayor concentracion de femicidios registrados es el 2023, mientras que el año 2024 muestra una reduccion de estos.
+*Interpretacion:* Este grafico muestra la cantidad de femicidios registrados en cada año del periodo de 2022 al 2024. Este nos permite observar que el año con mayor concentracion de femicidios registrados es el 2023, mientras que el año 2024 muestra una reduccion de estos.
 
 ## Grafico 2
-```{r}
- 
+```{r echo=FALSE}
+ggplotly(grafico2, tooltip = "text")
 ```
+*Explicacion:* Para este grafico al ser interactivo se procedio a hacer una columna de texto personalizada con `paste`. La idea de que sea interactivo es para poder visualizar mejor cual canton es cada punto.
+
+*Interpretacion:* El grafico de dispersion permite explorar si existe alguna relacion entre el indice de competitividad cantonal (ICC) y los femicidios registrados. Cada punto representa una observacion por canton, año y el color indica si el ICC es bajo, medio o alto. Podemos ver que no hay una asociacion fuerte entre el ICC y el numero de femicidios registrados pues la mayoria de los cantones presentan cero femicidios, independientemente del ICC.
 
 
-## subtitulos con este formato 
+## Grafico 3
+```{r echo=FALSE}
+grafico3
+```
+*Explicacion:* Para poder ver los cantones con mas femicidios, se agruparon los datos por canton y se ordeno de mayor a menor, despues con `head` se seleccionan los primeros quince y por ultimo se convierte la funcion canton en factor.
+
+*Interpretacion:* Este grafico muestra los 15 cantones con mayor cantidad acumulada de femicidios del año 2022 al 2024. Se puede observar que hay una mayor consentracion de casos en los cantones "corredores", "pococi" y "san jose" con exactamente 4 femicidios registrados durante el periodo analizado.
+
+## Grafico 4
+```{r echo=FALSE}
+ggplotly(grafico4, tooltip = "text")
+```
+*Explicacion:* Nuevamente se hace interactivo para poder ver los datos por aparte de cada caja de bigotes y los valores extremos.
+
+*Interpretacion:* Este diagrama de cajas compara la distribucion del porcentaje de mujeres matriculadas en educacion superior estatal segun categoria de competitividad cantonal. Se puede ver que los cantones de competitividad media exhiben la mayor dispersion en los porcentajes de matricula femenina, mientras que los de competitividad alta presentar la menor.
+
+## Grafico 5
+```{r echo=FALSE}
+grafico5
+```
+*Explicacion:* Se calcula el promedio del porcentaje de mujeres matriculadas para cada categoría de competitividad cantonal y el promedio de femicidios registrados para cada categoría de competitividad cantonal, luego se unen las dos tablas anteriores usando la variable categoria_competitividad y posteriormente se transforma la tabla a un formato largo con `rbind` (se multiplica el promedio de femicidios por 10 porque los femicidios suelen tener valores pequeños, pues por dicha hay mas mujeres matriculadas que femicidios).
+
+*Interpretacion:* Se compara por categoria de competitividad, el promedio de matricula femenina y el promedio de femicidios registrados. Se puede ver que los cantones con competitividad baja presentan mayor porcentaje promedio de matricula femenina.
+
+## Grafico 6
+```{r echo=FALSE}
+ggplotly(grafico6, tooltip = "text")
+```
+*Explicacion:* Se calcula primero el promedio de matricula femenina para cada año dentro de cada categoria de competitividad.
+
+*Interpretacion:* Este grafico muestra como cambia el porcentaje promedio de matricula femenina del 2022 al 2024 segun la categoria de competitividad cantonal. Se puede ver que entre las 3 primeras categorías de competitividad se mantienen relativamente constantes a lo largo del período, ya que las líneas son casi paralelas y no se cruzan.
 
 
 # Análisis estadístico 

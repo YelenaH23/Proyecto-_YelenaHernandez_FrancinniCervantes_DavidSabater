@@ -1539,6 +1539,8 @@ ggplotly(grafico6, tooltip = "text")
 
 #analisis Estadistico
 
+
+
 ```{r}
 
 
@@ -1892,8 +1894,6 @@ Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posici
 
 
 ```
-
-
 
 
 
@@ -2291,8 +2291,6 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Correlacion_
 
 ##############################################################################################
 Tabla Estadisticas Descriptivas segun canton
-
-
 
 
 ```{r, warning=FALSE}

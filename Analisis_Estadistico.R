@@ -582,9 +582,6 @@ Correlacion_indice_competitividad <-  resumen_estadistico_canton(datos = base_fi
 Correlacion_pilar_laboral <-  resumen_estadistico_canton(datos = base_final,
                                                   variable = "pilar_laboral")
 
-Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
-resumen_estadistico_cantonvariable = "pilar_infraestructura")
-
 
 Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
                                                           variable = "pilar_infraestructura")

@@ -380,6 +380,7 @@ resumen_estadistico_canton(
  
 ```
 
+
 La Funcion "medidas_posicion_por_canton()" recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor por cuartiles, varianza y desviacion estandar por canton
 
 ```{r}

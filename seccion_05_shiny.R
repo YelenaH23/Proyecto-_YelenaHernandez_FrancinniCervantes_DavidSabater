@@ -2,6 +2,8 @@
 library(shiny)
 library(dplyr)
 library(readr)
+library(plotly)
+library(tidyr)
 
 
 
@@ -129,11 +131,11 @@ server <- function(input, output, session) {
   output$grafico2 <- renderPlotly({
     datos <- datos_filtrados() %>% 
       mutate( texto = paste(
-        "Cantón:", base_final$canton,
-        "<br>Año:", base_final$anio,
-        "<br>ICC:", round(base_final$indice_competitividad, 2),
-        "<br>Categoría ICC:", base_final$categoria_competitividad,
-        "<br>Femicidios registrados:", base_final$femicidios_registrados
+        "Cantón:", canton,
+        "<br>Año:", anio,
+        "<br>ICC:", round(indice_competitividad, 2),
+        "<br>Categoría ICC:", categoria_competitividad,
+        "<br>Femicidios registrados:", femicidios_registrados
       ))
     grafico2 <- ggplot( datos,
                         aes( x = indice_competitividad, y = femicidios_registrados,
@@ -177,7 +179,7 @@ server <- function(input, output, session) {
     ggplotly(grafico4, tooltip = "text")
   })
   output$grafico5 <- renderPlot({
-    comparacion_larga <- base_final %>% 
+    comparacion_larga <- datos_filtrados() %>% 
       group_by(categoria_competitividad) %>% 
       summarise(
         `Matrícula femenina (%)` = mean(porcentaje_mujeres, na.rm = TRUE),
@@ -200,7 +202,11 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   output$grafico6 <- renderPlotly({
-    matricula_anio_cat <- aggregate(porcentaje_mujeres ~ anio + categoria_competitividad, data = base_final, FUN = mean)
+    matricula_anio_cat <- datos_filtrados() %>%
+      group_by(anio, categoria_competitividad) %>%
+      summarise(
+        porcentaje_mujeres = mean(porcentaje_mujeres, na.rm = TRUE),
+        .groups = "drop")
     
     grafico6 <- ggplot(matricula_anio_cat, aes(x = anio, y = porcentaje_mujeres, color = categoria_competitividad, group = categoria_competitividad, text = paste("Año:", anio, "<br>Categoría ICC:", categoria_competitividad, "<br>Porcentaje mujeres:", round(porcentaje_mujeres, 1), "%"))) +  
       geom_line(size = 1.2) +

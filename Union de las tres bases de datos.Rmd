@@ -1537,7 +1537,9 @@ ggplotly(grafico6, tooltip = "text")
 ```
 
 
-#analisis Estadistico
+$$Analisis  Estadistico$$
+
+
 
 ```{r}
 
@@ -1573,19 +1575,16 @@ variables_por_dimension <- list(
 
 
 ```
-########################################################################################################
-Funciones de analisis
+
+Funciones de 
 
 
 ```{r}
-"funcion Resumen Estadistico"
+#"funcion Resumen Estadistico"
 resumen_estadistico <- function(datos, variable) {
-  
-  # Extrae la columna indicada usando su nombre.
+
   valores <- datos[[variable]]
 
-  
-  # Crea y devuelve un data frame con las estadísticas principales.
   data.frame(
     variable = variable,
 
@@ -1603,7 +1602,7 @@ resumen_estadistico <- function(datos, variable) {
 
 
 ```{r}
-"medidas de posicion"
+#"medidas de posicion"
 
 medidas_posicion <- function(datos, variable) {
 
@@ -1618,14 +1617,12 @@ varianza = var(valores,na.rm = TRUE),
 desviacion_estandar = sd(valores, na.rm = TRUE))}
 
 
-
-
 ```
 
 
 ```{r}
 
-"Funcion de medidas de posicion"
+#"Funcion de medidas de posicion por canton"
 
 
 medidas_posicion_por_canton <- function(datos, variable) {
@@ -1658,29 +1655,24 @@ medidas_posicion_por_canton <- function(datos, variable) {
   
     
 
- 
 ```
 
 
 
 
 ```{r}
-"Resumen estadistico canton"
+#"Resumen estadistico canton"
 
 resumen_estadistico_canton <- function(datos, variable) {
   
-  # Obtener lista de cantones únicos
   cantones <- unique(datos$canton)
-  
-  # Aplicar cálculo por cada cantón
+
   resultado <- do.call(rbind, lapply(cantones, function(c) {
     
     datos_filtrados <- datos[datos$canton == c, ]
-    
-    # Extraer valores
+
     valores <- datos_filtrados[[variable]]
-    
-    # Crear fila de resumen
+   
     data.frame(
       variable = variable,
       canton = c,
@@ -1697,7 +1689,7 @@ resumen_estadistico_canton <- function(datos, variable) {
 
 ```
 
-##############################################################################################
+
 
 Tablas descriptivas resumen
 
@@ -1706,7 +1698,7 @@ Tablas descriptivas resumen
 ```{r}
 
 
-          " Tabla de estadisticas desriptivas en educacion Costa Rica"
+          #" Tabla de estadisticas desriptivas en educacion Costa Rica"
 
 Tabla_matricula_hombres <-  resumen_estadistico(datos = base_final,
                        variable = "matricula_hombres")
@@ -1737,9 +1729,6 @@ Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matri
                                     Tabla_matricula_no_primer_ingreso,
                                     Tabla_matricula_estatal_total
                                  )
-
-
- print(Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica)
  
  
 
@@ -1749,9 +1738,9 @@ Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica <- rbind( Tabla_matri
 
 
 
-```{r}
+```{r }
 
-          " Tabla de estadisticas desriptivas en competitividad Costa Rica"
+          #" Tabla de estadisticas desriptivas en competitividad Costa Rica"
 
 Resumen_indice_competitividad <-  resumen_estadistico(datos = base_final,
                        variable = "indice_competitividad")
@@ -1794,7 +1783,7 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indi
                                       )
 
 
- print(Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica)
+ 
  
 
   
@@ -1804,7 +1793,7 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Resumen_indi
 
 
 ```{r}
-          " Tabla de estadisticas desriptivas en violencia Contra la mujer Costa Rica"
+          #" Tabla de estadisticas desriptivas en violencia Contra la mujer Costa Rica"
 
 Tabla_femicidio_art_21 <-  resumen_estadistico(datos = base_final,
                        variable = "femicidio_art_21")
@@ -1842,17 +1831,13 @@ Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica <- rbind( Tabla_femicidio_a
                                       )
 
 
- print(Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica)
-
-
-
-
+ 
 
 
 ```
 
 
-#############################################################################################
+
 Tablas segun medidas de posion 
 
 
@@ -1860,7 +1845,7 @@ Tablas segun medidas de posion
 ```{r}
  
 
-" Tabla de medidas posicion en educacion Costa Rica"
+#" Tabla de medidas posicion en educacion Costa Rica"
 
 Tabla_medidas_posicion_matricula_hombres <-  medidas_posicion(datos = base_final,
                        variable = "matricula_hombres")
@@ -1893,7 +1878,7 @@ Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posici
                                  )
 
 
- print(Tabla_de_medidas_posicion_en_educacion_Costa_Rica)
+ 
 
 
 
@@ -1904,12 +1889,10 @@ Tabla_de_medidas_posicion_en_educacion_Costa_Rica <- rbind( Tabla_medidas_posici
 
 
 
-
-
 ```{r}
 
 
-          " Tabla de medidas posicion en competitividad Costa Rica"
+         # " Tabla de medidas posicion en competitividad Costa Rica"
 
 ResumenMP_indice_competitividad <-  medidas_posicion(datos = base_final,
                        variable = "indice_competitividad")
@@ -1952,7 +1935,7 @@ Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_comp
                                       )
 
 
- print(Tabla_medidas_posicion_Competitividad_Costa_Rica)
+ 
 
 
 ```
@@ -1960,7 +1943,7 @@ Tabla_medidas_posicion_Competitividad_Costa_Rica <- rbind( ResumenMP_indice_comp
 
 
 ```{r}
-"Tabla de medidas de posicion  Violencia contra la mujer en Costa Rica"
+#"Tabla de medidas de posicion  Violencia contra la mujer en Costa Rica"
 
 
 TablaMP_femicidio_art_21 <-  medidas_posicion(datos = base_final,
@@ -1998,15 +1981,6 @@ Tabla_medidas_posicion_Violencia_Costa_Rica <- rbind( TablaMP_femicidio_art_21,
                                       )
 
 
- print(Tabla_medidas_posicion_Violencia_Costa_Rica)
-
-print("hola")
-
-
-
-
-
-
 
 
 
@@ -2017,15 +1991,11 @@ print("hola")
 ```
 
 
-
-
-######################################################################################################################
 Tablas de Medidas de Posicion segun canton 
-medidas_posicion_por_canton 
-
+ 
 
 ```{r}
-" Tabla de medidas posicion en educacion Conton"
+#" Tabla de medidas posicion en educacion Conton"
 
 Tabla_medidas_posicion_conton_matricula_hombres <-  medidas_posicion_por_canton(datos = base_final,
                        variable = "matricula_hombres")
@@ -2058,7 +2028,7 @@ Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_c
                                  )
 
 
- print(Tabla_de_medidas_posicion_en_educacion_Conton)
+ 
 
 
 
@@ -2069,7 +2039,7 @@ Tabla_de_medidas_posicion_en_educacion_Conton <- rbind( Tabla_medidas_posicion_c
 
 ```{r}
 
-  " Tabla de medidas posicion en competitividad por canton"
+  #" Tabla de medidas posicion en competitividad por canton"
 
 ResumenMPC_indice_competitividad <-  medidas_posicion_por_canton(datos = base_final,
                        variable = "indice_competitividad")
@@ -2112,7 +2082,7 @@ Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competi
                                       )
 
 
- print(Tabla_medidas_posicion_Competitividad_Canton)
+
 
 
 
@@ -2126,7 +2096,7 @@ Tabla_medidas_posicion_Competitividad_Canton <- rbind( ResumenMPC_indice_competi
 
 ```{r}
 
-"Tabla de medidas de posicion  Violencia contra la mujer por canton"
+#"Tabla de medidas de posicion  Violencia contra la mujer por canton"
 
 
 TablaMPC_femicidio_art_21 <-  medidas_posicion_por_canton(datos = base_final,
@@ -2164,7 +2134,7 @@ Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21,
                                       )
 
 
- print(Tabla_medidas_posicion_Violencia_Conton)
+ 
 
 
 ```
@@ -2173,7 +2143,7 @@ Tabla_medidas_posicion_Violencia_Conton <- rbind( TablaMPC_femicidio_art_21,
 
 
 
-############################################################################################################
+
 Tablas de correlación 
 La correlación no implica causalidad 
 
@@ -2181,68 +2151,62 @@ La correlación no implica causalidad
 ```{r}
 
 
-"Correlacion en estadisticas descriptivas Violencia contra la muejer y competitividad en Costa Rica"
+#"Correlacion en estadisticas descriptivas Violencia contra la muejer y competitividad en Costa Rica"
 
-Correlacion_mmuertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
-                       variable = "muertes_violentas_mujeres_total")
-
-
-Correlacion_indice_competitividad <-  resumen_estadistico(datos = base_final,
-                       variable = "indice_competitividad")
-
-Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_laboral")
-
-Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_infraestructura")
+Correlacion_muertes_violentas_mujeres_total <-  resumen_estadistico_canton(datos = base_final,
+                                                                     variable = "muertes_violentas_mujeres_total")
 
 
-Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_infraestructura")
+Correlacion_indice_competitividad <-  resumen_estadistico_canton(datos = base_final,
+                                                          variable = "indice_competitividad")
 
-   
-Tabla_Correlacion_violencia_y_competitividad <- rbind( 
+Correlacion_pilar_laboral <-  resumen_estadistico_canton(datos = base_final,
+                                                  variable = "pilar_laboral")
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
+resumen_estadistico_cantonvariable = "pilar_infraestructura")
+
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
+                                                          variable = "pilar_infraestructura")
+
+
+Tabla_Correlacion_violencia_y_competitividad_Canton_2022_2024 <- rbind( 
   Correlacion_muertes_violentas_mujeres_total,  
   Correlacion_indice_competitividad,
   Correlacion_pilar_laboral,
   Correlacion_pilar_infraestructura 
-  ) 
-
- print(Tabla_Correlacion_violencia_y_competitividad)
-
-
-
+)  
 
 ```
  
 
 ```{r}
 
-"Correlacion  en estadisticas descriptivas matricula estatal total y competitividad en Costa Rica"
+#"Correlacion  en estadisticas descriptivas matricula estatal total y competitividad en Costa Rica por canton"
 
-Correlacion_matricula_estatal_total <-  resumen_estadistico(datos = base_final,
-                       variable = "matricula_estatal_total")
-
-
-Correlacion_indice_competitividad <-  resumen_estadistico(datos = base_final,
-                       variable = "indice_competitividad")
-
-Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_laboral")
-
-Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_infraestructura")
+Correlacion_matricula_estatal_total <-  resumen_estadistico_canton(datos = base_final,
+                                                            variable = "matricula_estatal_total")
 
 
-Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_infraestructura")
+Correlacion_indice_competitividad <-  resumen_estadistico_canton(datos = base_final,
+                                                          variable = "indice_competitividad")
 
-   
-Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion_matricula_estatal_total,
-                                                                  Correlacion_indice_competitividad, Correlacion_pilar_laboral, Correlacion_pilar_infraestructura 
-  ) 
+Correlacion_pilar_laboral <-  resumen_estadistico_canton(datos = base_final,
+                                                  variable = "pilar_laboral")
 
- print(Tabla_Correlacion_matricula_estatal_total_y_competitividad)
+Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
+                                                          variable = "pilar_infraestructura")
+
+
+Correlacion_pilar_infraestructura <-  resumen_estadistico_canton(datos = base_final,
+                                                          variable = "pilar_infraestructura")
+
+
+Tabla_Correlacion_matricula_estatal_total_y_competitividad_canton_2022_2024 <- rbind( Correlacion_matricula_estatal_total,
+                                                                     Correlacion_indice_competitividad, Correlacion_pilar_laboral, Correlacion_pilar_infraestructura 
+) 
+ 
 
 
 ```
@@ -2253,54 +2217,32 @@ Tabla_Correlacion_matricula_estatal_total_y_competitividad <- rbind( Correlacion
 
 ```{r}
 
-"Correlacion en estadisticas descriptivas violencia  estatal total y competitividad en Costa Rica"
+#"Correlacion en estadisticas descriptivas violencia y educacion en Costa Rica"
 
-Correlacion_mmuertes_violentas_mujeres_total <-  resumen_estadistico(datos = base_final,
-                       variable = "muertes_violentas_mujeres_total")
-
-
-Correlacion_pilar_economico <-  resumen_estadistico( datos = base_final, 
-                                                 variable = "pilar_economico")
+Correlacion_muertes_violentas_mujeres_total <-  resumen_estadistico_canton(datos = base_final,
+                                                                    variable = "muertes_violentas_mujeres_total")
 
 
- Correlacion_pilar_empresarial <- resumen_estadistico( datos = base_final,
-                                                   variable = "pilar_empresarial") 
+Correlacion_matricula_primer_ingreso <- resumen_estadistico_canton( datos = base_final,
+                                                             variable = "matricula_primer_ingreso") 
 
-   
- Correlacion_pilar_gobierno <- resumen_estadistico(
- datos = base_final,
-  variable = "pilar_gobierno") 
 
+Correlacion_matricula_no_primer_ingreso <-  resumen_estadistico_canton(datos = base_final,
+                                                                variable = "matricula_no_primer_ingreso")
+
+Correlacion_matricula_estatal_total <-  resumen_estadistico_canton(datos = base_final,
+                                                            variable = "matricula_estatal_total")
+
+
+
+
+ Tabla_Correlacion_estadisticas_Descriptivas_violecia_y_educacion_Canton_2022_2024 <- rbind( Correlacion_muertes_violentas_mujeres_total , 
+                                                                                Correlacion_matricula_primer_ingreso, 
+                                                                                Correlacion_matricula_no_primer_ingreso, 
+                                                                                Correlacion_matricula_estatal_total
+                                                                                
+)
  
-Correlacion_pilar_laboral <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_laboral")
-
-Correlacion_pilar_infraestructura <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_infraestructura")
-
-Correlacion_pilar_innovacion <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_innovacion")
-
-Correlacion_pilar_calidad_vida <-  resumen_estadistico(datos = base_final,
-                       variable = "pilar_calidad_vida")
-
-
-Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Correlacion_mmuertes_violentas_mujeres_total , 
-                                                   Correlacion_pilar_economico, 
-                                                   Correlacion_pilar_empresarial, 
-                                                   Correlacion_pilar_gobierno,
-                                                   Correlacion_pilar_laboral,
-                                                   Correlacion_pilar_infraestructura,
-                                                   Correlacion_pilar_innovacion,
-                                                   Correlacion_pilar_calidad_vida         )
- 
-
-
-
-
-
-
-
 
 
 ```
@@ -2312,15 +2254,14 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica <- rbind( Correlacion_
 
 
 
-##############################################################################################
+
 Tabla Estadisticas Descriptivas segun canton
-
-
 
 
 ```{r, warning=FALSE}
 
-       " Tabla de estadisticas desriptivas en educacion por canton"
+       
+#"Tabla de estadisticas desriptivas en educacion por canton"
 Resumen_matricula_hombres_canton <-   resumen_estadistico_canton(datos = base_final,
                        variable = "matricula_hombres")
 
@@ -2354,11 +2295,6 @@ Resumen_matricula_estatal_total_canton <- resumen_estadistico_canton(datos = bas
                                  )
 
 
- print(Tabla_estadisticas_Descriptivas_en_educaicon_por_canton)
-
-
-
-
 ```
 
 
@@ -2367,7 +2303,7 @@ Resumen_matricula_estatal_total_canton <- resumen_estadistico_canton(datos = bas
 
 
 
-"Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton"
+#"Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton"
 
 Resumen_indice_competitividad_canton <-  resumen_estadistico_canton(datos = base_final,
                        variable = "indice_competitividad")
@@ -2410,7 +2346,7 @@ Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton <- rbind( Resumen_in
                                       )
 
 
- print(Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton)
+ 
 
 
 ```
@@ -2421,11 +2357,9 @@ Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton <- rbind( Resumen_in
 
 
 
-
-
 ```{r}
 
-"Tabla estadistica resumen violencia contra la mujer por _canton"
+#"Tabla estadistica resumen violencia contra la mujer por _canton"
 
 
 Tabla_femicidio_art_21_canton <-  resumen_estadistico_canton(datos = base_final,
@@ -2460,23 +2394,9 @@ Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton <- rbind( Tabla_femic
                                              Tabla_sospecha_femicidio_canton, 
                                              Tabla_femicidios_registrados_canton,
                                              Tabla_muertes_violentas_mujeres_total_canton
-                                      )
-
-
- print(Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton)
+)
 
 
 
 ```
 
-
-
-
-
- 
-```
-
-
-
-
-## subtitulos con este formato 

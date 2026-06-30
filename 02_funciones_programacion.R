@@ -322,11 +322,11 @@ desviacion_estandar = sd(valores, na.rm = TRUE))}
 #"funcion Resumen Estadistico" 
 resumen_estadistico <- function(datos, variable) {
   
-  # Extrae la columna indicada usando su nombre.
+ 
   valores <- datos[[variable]]
 
   
-  # Crea y devuelve un data frame con las estadísticas principales.
+ 
   data.frame(
     variable = variable,
 

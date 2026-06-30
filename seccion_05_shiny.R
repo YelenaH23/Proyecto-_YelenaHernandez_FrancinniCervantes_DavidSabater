@@ -1,15 +1,11 @@
 library(shiny)
 library(dplyr)
 library(readr)
-<<<<<<< HEAD
-library(plotly)
-library(tidyr)
-=======
 library(ggplot2)
 library(plotly)
 library(DT)
 library(tidyr)   # para pivot_longer
->>>>>>> a3ed240
+
 
 # Cargar datos
 base_final <- read_csv("base_final.csv")
@@ -262,13 +258,8 @@ server <- function(input, output, session) {
   })
   
   output$grafico2 <- renderPlotly({
-<<<<<<< HEAD
-    datos <- datos_filtrados() %>% 
-      mutate( texto = paste(
-=======
     datos <- datos_filtrados() %>%
       mutate(texto = paste(
->>>>>>> a3ed240
         "Cantón:", canton,
         "<br>Año:", anio,
         "<br>ICC:", round(indice_competitividad, 2),
@@ -317,13 +308,8 @@ server <- function(input, output, session) {
   })
   
   output$grafico5 <- renderPlot({
-<<<<<<< HEAD
-    comparacion_larga <- datos_filtrados() %>% 
-      group_by(categoria_competitividad) %>% 
-=======
     comparacion_larga <- base_final %>%
       group_by(categoria_competitividad) %>%
->>>>>>> a3ed240
       summarise(
         `Matrícula femenina (%)` = mean(porcentaje_mujeres, na.rm = TRUE),
         `Femicidios promedio` = mean(femicidios_registrados, na.rm = TRUE),
@@ -341,18 +327,9 @@ server <- function(input, output, session) {
   })
   
   output$grafico6 <- renderPlotly({
-<<<<<<< HEAD
-    matricula_anio_cat <- datos_filtrados() %>%
-      group_by(anio, categoria_competitividad) %>%
-      summarise(
-        porcentaje_mujeres = mean(porcentaje_mujeres, na.rm = TRUE),
-        .groups = "drop")
-=======
     matricula_anio_cat <- base_final %>%
       group_by(anio, categoria_competitividad) %>%
       summarise(porcentaje_mujeres = mean(porcentaje_mujeres, na.rm = TRUE), .groups = "drop")
->>>>>>> a3ed240
-    
     p <- ggplot(matricula_anio_cat,
                 aes(x = anio, y = porcentaje_mujeres, color = categoria_competitividad,
                     group = categoria_competitividad,

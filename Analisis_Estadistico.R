@@ -654,18 +654,6 @@ Correlacion_matricula_estatal_total <-  resumen_estadistico_canton(datos = base_
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-#
 # Tabla Estadisticas Descriptivas segun canton
 
 

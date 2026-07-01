@@ -4,12 +4,7 @@ subtitle: "Competitividad cantonal, femicidios y matrícula estatal en Costa Ric
 author: "Francinni Cervantes, Yelena Hernandez, David Sabater"
 date: "`r format(Sys.Date(), '%d de %B de %Y')`"
 output:
-  html_document:
-    toc: true
-    toc_float: true
-    number_sections: true
-    theme: flatly
-    highlight: tango
+  rmdformats::html_clean
 ---
 
 ```{r setup, message=FALSE, warning=FALSE}
@@ -22,15 +17,12 @@ knitr::opts_chunk$set(
 
 ```{r}
 library(shiny)
-library(dplyr)
-library(tidyr)
-library(lubridate)
 library(magrittr)
-library(ggplot2)
 library(tidyverse)
 library(readxl)
 library(openxlsx)
 library(plotly)
+library(DT)
 
 source("02_funciones_programacion.R")
 ```
@@ -155,6 +147,8 @@ icc_2022_limpio <- icc_2022_2023_original %>%
     ranking_competitividad = rank_icc_p
   )
 ```
+
+
 
 ### Unión final entre bases 
 
@@ -367,15 +361,20 @@ De esta forma se busca presentar de una vizualizacion de los datos segun canton 
 ## Funciones para el analisis estadisticos 
 
 La función `resumen_estadistico_canton()` recibe una base de datos y el nombre de una variable numérica. Como resultado, genera un data frame con el valor mínimo, media, mediana, desviación estándar, máximo, por canton.
+```{r}
+source("Analisis_Estadistico.R")
+```
+
 
 ```{r}
-
-source("Analisis_Estadistico.R")
 
 
 resumen_estadistico_canton(
  datos = base_final,
-  variable = "pilar_gobierno") 
+  variable = "pilar_gobierno") %>% 
+    mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = 'Funcion Resumen Estadistico por Canton')
 
  
 ```
@@ -385,8 +384,12 @@ La Funcion "medidas_posicion_por_canton()" recibe una base de datos y el nombre 
 
 ```{r}
 
- medidas_posicion_por_canton(datos = base_final,
-                       variable = "muertes_violentas_mujeres_total")
+
+medidas_posicion_por_canton(
+  datos = base_final, 
+  variable = "muertes_violentas_mujeres_total") %>%
+  datatable(rownames = FALSE,
+            caption = 'Funcion Medidas de posicion por Canton')
 
  
 ```
@@ -425,7 +428,10 @@ Titulo
 
 ```{r}
 
-Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica_2022_2024
+ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 1:Tabla  resumen estadistido decriptivo en relacion con la competitividad en Costa Rica  el periodo 2022 al 2024 ")
                                       
 ```
 
@@ -434,8 +440,10 @@ Tabla_estadisticas_Descriptivas_Competitividad_Costa_Rica_2022_2024
  
 
 ```{r}
-
-Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica_2022_2024 
+Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 2:Tabla resumen estadistido decriptivo en relacion con la edicacion en Costa Rica  el periodo 2022 al 2024")
  
 ```
 
@@ -444,7 +452,10 @@ Tabla_de_estadisticas_Descriptivas_en_educacion_Costa_Rica_2022_2024
 
 
 ```{r}
-Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica_2022_2024
+Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 3:Tabla de resumen estadistido decriptivo en relacion con la Violecia en Costa Rica  el periodo 2022 al 2024")
 
 
 ```
@@ -457,7 +468,10 @@ Tabla_estadisticas_Descriptivas_Violencia_Costa_Rica_2022_2024
 
 ```{r}
 
-Tabla_Correlacion_violencia_y_competitividad_Canton_2022_2024
+Tabla_Correlacion_violencia_y_competitividad_Canton_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 4:Tabla de correlacion mediante un resumen estadistido decriptivo  en relacion con la  Violencia y competitivida  en Costa Rica   por canton el periodo 2022 al 2024")
  
  
 ```
@@ -469,7 +483,10 @@ Tabla_Correlacion_violencia_y_competitividad_Canton_2022_2024
 
 
 ```{r}
-Tabla_Correlacion_matricula_estatal_total_y_competitividad_canton_2022_2024 
+Tabla_Correlacion_matricula_estatal_total_y_competitividad_canton_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 5:Tabla se puede vizializar una correlacion mediante un resumen estadistido decriptivo  en relacion con la  matricula estatal total y competitividad  en Costa Rica  por canton el periodo 2022 al 2024 ") 
  
 ```
 
@@ -482,7 +499,10 @@ Tabla_Correlacion_matricula_estatal_total_y_competitividad_canton_2022_2024
 
 ```{r}
 
-Tabla_Correlacion_estadisticas_Descriptivas_violecia_y_educacion_Canton_2022_2024
+Tabla_Correlacion_estadisticas_Descriptivas_violecia_y_educacion_Canton_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 6:Tabla de correlacion mediante un resumen estadistido decriptivo  en relacion con la  violencia y educacion en Costa Rica por canton  el periodo 2022 al 2024 ")
 
  
 ```
@@ -495,7 +515,11 @@ Tabla_Correlacion_estadisticas_Descriptivas_violecia_y_educacion_Canton_2022_202
 
 ```{r}
 
- Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton_2022_2024 
+ Tabla_Estadisticas_Descriptivas_Competitividad_segun_canton_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 7:Tabla resumen estadistido decriptivo en relacion con la Competitividad por canton  en Costa Rica  el periodo 2022 al 2024
+")
 
  
 ```
@@ -506,7 +530,10 @@ Tabla_Correlacion_estadisticas_Descriptivas_violecia_y_educacion_Canton_2022_202
 
 ```{r}
 
-Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton_2022_2024 
+Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 8:Tabla  un resumen estadistido decriptivo en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024")
  
 ```
 
@@ -516,13 +543,16 @@ Tabla_Resumen_estadistico_Violencia_contra_la_mujer_Canton_2022_2024
 
 ```{r}
 
-Tabla_medidas_posicion_Violencia_Conton_2022_2024 
+Tabla_medidas_posicion_Violencia_Conton_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 9:Tabla de las medidas de posicion en relacion con la Violencia por canton  en Costa Rica  el periodo 2022 al 2024")
 
 
  
 ```
 
-*Titulo*Tabla de las medidas de posición en relación con la Competitividad por cantón  en Costa Rica  el periodo 2022 al 2024
+*Titulo* Tabla de las medidas de posición en relación con la Competitividad por cantón  en Costa Rica  el periodo 2022 al 2024
 
 
 
@@ -530,7 +560,10 @@ Tabla_medidas_posicion_Violencia_Conton_2022_2024
 ```{r}
 
 
-Tabla_medidas_posicion_Competitividad_Canton_2022_2024                                   
+Tabla_medidas_posicion_Competitividad_Canton_2022_2024  %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 9:Tabla de las medidas de posición en relación con la Competitividad por cantón  en Costa Rica  el periodo 2022 al 2024")                                 
 
  
 ```
@@ -541,7 +574,10 @@ Tabla_medidas_posicion_Competitividad_Canton_2022_2024
 
 ```{r}
 
-Tabla_de_medidas_posicion_en_educacion_Conton_2022_2024 
+Tabla_de_medidas_posicion_en_educacion_Conton_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 10:Tabla de las medidas de posicion en relacion con la educacion por canton  en Costa Rica  el periodo 2022 al 2024")
 
  
 ```
@@ -554,7 +590,10 @@ Tabla_de_medidas_posicion_en_educacion_Conton_2022_2024
 
 
 ```{r}
-Tabla_medidas_posicion_Violencia_Costa_Rica_2022_2024 
+Tabla_medidas_posicion_Violencia_Costa_Rica_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 11:Tabla de las medidas de posicion en relacion con la Violecia  en Costa Rica  el periodo 2022 al 2024 ")
  
 ```
 
@@ -563,7 +602,10 @@ Tabla_medidas_posicion_Violencia_Costa_Rica_2022_2024
 
 ```{r}
 
-Tabla_medidas_posicion_Competitividad_Costa_Rica_2022_2024
+Tabla_medidas_posicion_Competitividad_Costa_Rica_2022_2024%>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 12:Tabla de las medidas de posición en relación con la competitividad  en Costa Rica  el periodo 2022 al 2024")
 
  
 ```
@@ -573,7 +615,10 @@ Tabla_medidas_posicion_Competitividad_Costa_Rica_2022_2024
 
 ```{r}
 
-Tabla_de_medidas_posicion_en_educacion_Costa_Rica_2022_2024 
+Tabla_de_medidas_posicion_en_educacion_Costa_Rica_2022_2024 %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  datatable(rownames = FALSE,
+            caption = "Tabla 13:Tabla de las medidas de posicion en relacion con la educacion en Costa Rica  el periodo 2022 al 2024  ")
 
  
 ```
